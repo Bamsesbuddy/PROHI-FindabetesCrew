@@ -16,7 +16,7 @@ Include the name, logo and images refering to your project
 
 The problem detected was...
 
-The proposed solution is valuable because...
+The proposed solution is valuable because...it is a serious worldwide concern.
 
 ## System description
 
