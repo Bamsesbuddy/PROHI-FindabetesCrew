@@ -53,7 +53,7 @@ st.dataframe(dataframe)
 # Add a selectbox to the sidebar:
 add_selectbox = st.selectbox(
     'How would you like to be contacted?',
-    ('Email', 'Home phone', 'Mobile phone')
+    ('Email', 'House phone', 'Mobile phone')
 )
 
 # Add a slider to the sidebar:
