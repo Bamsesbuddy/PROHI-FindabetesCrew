@@ -6,7 +6,7 @@ st.set_page_config(
 )
 
 # Sidebar configuration
-st.sidebar.image("./assets/project-logo.jpg",)
+st.sidebar.image("./assets/LogoFindabetes.png",)
 st.sidebar.success("Select a tab above.")
 
 # # Page information
@@ -15,9 +15,8 @@ st.write("# Findabetes CDS Tool")
 
 st.markdown(
 """
-    ## Welcome to the patient's view!
+    ## Welcome to the patient's view! Please navigate to Questionnaire in the sidebar.
     
 """
 )
 
-fruit = st.radio("Do you consume fruit 1 or more times per day?", "[Yes]","[No]")
