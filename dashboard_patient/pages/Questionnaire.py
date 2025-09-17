@@ -20,3 +20,10 @@ option = st.selectbox(
     index=None,
     placeholder="Choose one",
 )
+
+option = st.selectbox(
+    "Do you consume fruit 1 or more times per day?",
+    ("Yes", "No"),
+    index=None,
+    placeholder="Choose one",
+)
