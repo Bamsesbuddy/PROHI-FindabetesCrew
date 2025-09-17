@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Findabetes CDS Tool",
-    page_icon="👋",
+    page_icon="assets/Logofindabetes.png",
 )
 
 # Sidebar configuration
@@ -19,4 +19,6 @@ st.markdown(
     
 """
 )
+
+st.caption("Welcome to the patient's view! Please navigate to Questionnaire in the sidebar")
 
