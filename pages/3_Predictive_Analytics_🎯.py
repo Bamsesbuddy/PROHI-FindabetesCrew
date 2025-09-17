@@ -6,7 +6,7 @@ st.markdown("# Predictive Analytics 🎯")
 st.sidebar.markdown("# Predictive Analytics 🎯")
 
 """
-⚠️ Add here some predictive analytics with Widgets and Plots
+⚠️ Add here some predictive analytics with Widgets and Plots BLAHABLAHA
 """
 
 st.write("# Example of model prediction")
