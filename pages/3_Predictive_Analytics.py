@@ -1,12 +1,12 @@
 import streamlit as st
 import pickle
 
-st.markdown("# Predictive Analytics 🎯")
+st.markdown("# Patient prediction 🎯")
 
-st.sidebar.markdown("# Predictive Analytics 🎯")
+st.sidebar.markdown("# Patient prediction 🎯")
 
 """
-⚠️ Add here some predictive analytics with Widgets and Plots BLAHABLAHA
+⚠️ Add here some predictive analytics with Widgets and Plots 
 """
 
 st.write("# Example of model prediction")
@@ -38,3 +38,9 @@ if st.button('Predict!'):
 # 
 ⚠️ Add some visualizations to help understanding what the predictions mean...
 """
+
+
+if st.button("See detailed view"): 
+    st.switch_page("Dashboard_Clinician/pages/4_Prescriptive_Analytics.py")
+
+st.page_link("Dashboard_Clinician/pages/4_Prescriptive_Analytics.py")
