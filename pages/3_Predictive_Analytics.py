@@ -41,13 +41,7 @@ st.write("# Example of model prediction")
 # 
 ⚠️ Add some visualizations to help understanding what the predictions mean...
 """
-## If we wanted a button that redirects us to Prescriptive Analytics, here it is below..
+## Button that redirects us to Prescriptive Analytics, page 4
 if st.button("See detailed view"): 
     st.switch_page("pages/4_Prescriptive_Analytics.py")
 
-## And if we want just the link to the page, here it is below..
-st.page_link("pages/4_Prescriptive_Analytics.py")
-
-## This was the old one, can be removed, but good to see the difference on the path!
-# st.button("See detailed view"): 
-    #st.switch_page("Dashboard_Clinician/pages/4_Prescriptive_Analytics.py")

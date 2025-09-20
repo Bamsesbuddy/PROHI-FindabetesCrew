@@ -19,6 +19,11 @@ with st.form("my_form"):
 )
 
 ## Insert BMI calculator here!
+    weight = st.number_input("Weight (kg)")
+    height = st.number_input("Height (cm):")
+    def calculate_BMI(weight, height):
+        height_meter = height / 100
+        return weight / (height_meter ** 2) 
 
     option = st.radio(
     "Have you smoked at least 100 cigarettes in your entire life? [Note: 5 packs = 100 cigarettes]",
