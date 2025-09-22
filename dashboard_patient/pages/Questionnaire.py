@@ -24,7 +24,7 @@ with st.form("my_form"):
     def calculate_BMI(weight, height):
         height_meter = height / 100
         return weight / (height_meter ** 2) 
-
+    
     option = st.radio(
     "Have you smoked at least 100 cigarettes in your entire life? [Note: 5 packs = 100 cigarettes]",
     ["No", "Yes"],
@@ -84,6 +84,7 @@ with st.form("my_form"):
     option = st.select_slider(
         "Now thinking about your mental health, which includes stress, depression, and problems with emotions, for how many days during the past 30 days was your mental health ***not*** good?",
         options=[
+        "0",
         "1",
         "2",
         "3",
@@ -120,6 +121,7 @@ with st.form("my_form"):
     option = st.select_slider(
         "Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health ***not*** good?",
         options=[
+        "0",
         "1",
         "2",
         "3",
