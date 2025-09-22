@@ -1,11 +1,22 @@
 import streamlit as st
+import pandas as pd
 
 st.markdown("# Descriptive Analytics 📊")
 
 st.sidebar.markdown("# Descriptive Analytics 📊")
 
-"""
-Add here some descriptive analytics with Widgets and Plots
+# The code for storing the processed dataset data.csv
+@st.cache_data
+def load_data():
+    return pd.read_csv("jupyter-notebooks/data.csv")
+X = load_data()
+
+# Plotting a dataframe
+st.markdown("## Tabular dataset of five patients")
+st.dataframe(X.head())
+
+
+"""Add here some descriptive analytics with Widgets and Plots
 
 ### ⚠️ In-class exercise: Integrate a plot from plotly examples
 
