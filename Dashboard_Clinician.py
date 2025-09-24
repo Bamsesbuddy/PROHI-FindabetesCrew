@@ -30,20 +30,3 @@ the analytical skills to argue how and why specific techniques could
 enhance the problem domain related to the selected dataset.
 """
 
-# DATAFRAME MANAGEMENT
-import numpy as np
-
-dataframe = np.random.randn(10, 20)
-st.dataframe(dataframe)
-
-# Add a selectbox to the sidebar:
-add_selectbox = st.selectbox(
-    'How would you like to be contacted?',
-    ('Email', 'House phone', 'Mobile phone')
-)
-
-# Add a slider to the sidebar:
-add_slider = st.slider(
-    'Select a range of values',
-    0.0, 100.0, (25.0, 75.0)
-)

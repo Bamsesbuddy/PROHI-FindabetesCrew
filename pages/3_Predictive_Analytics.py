@@ -5,11 +5,14 @@ st.markdown("# Patient prediction 🎯")
 
 st.sidebar.markdown("# Patient prediction 🎯")
 
+
 """
 ⚠️ Add here some predictive analytics with Widgets and Plots 
 """
 
 st.write("# Example of model prediction")
+
+st.image("./assets/FindabetesHighrisk.png", width=500)
 
 # !!! Commenting this section below until we have the trained model, 
 # to try if the page link code will work :) We will uncomment later.
@@ -37,10 +40,8 @@ st.write("# Example of model prediction")
     #prediction = loaded_model.predict(user_data)
     #st.write(f"The predicted value for data {user_data} is {prediction}")
 
-"""
-# 
-⚠️ Add some visualizations to help understanding what the predictions mean...
-"""
+#"""
+#  Add some visualizations to help understanding what the predictions mean...
 ## Button that redirects us to Prescriptive Analytics, page 4
 if st.button("See detailed view"): 
     st.switch_page("pages/4_Prescriptive_Analytics.py")

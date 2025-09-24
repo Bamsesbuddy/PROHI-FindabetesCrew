@@ -4,7 +4,8 @@ import plotly.express as px
 
 st.markdown("# Descriptive Analytics 📊")
 
-st.sidebar.markdown("# Descriptive Analytics 📊")
+st.sidebar.markdown("# Descriptive Analytics")
+st.sidebar.image("./assets/LogoFindabetes.png",)
 
 # The code for storing the processed dataset data.csv
 @st.cache_data
