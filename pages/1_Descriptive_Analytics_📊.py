@@ -26,6 +26,8 @@ st.dataframe(X.head())
 import numpy as np
 import plotly.figure_factory as ff
 
+st.bar_chart(X.set_index("Smoker"))
+
 # Add histogram data
 x1 = np.random.randn(200) - 2
 x2 = np.random.randn(200)
