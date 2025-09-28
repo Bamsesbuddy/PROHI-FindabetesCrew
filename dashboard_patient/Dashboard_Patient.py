@@ -15,10 +15,17 @@ st.write("# Findabetes CDS Tool")
 
 st.markdown(
 """
-    ## Welcome to the patient's view! Please navigate to Questionnaire in the sidebar.
+    ## Welcome to the patient's view!
     
 """
 )
 
-st.caption("Welcome to the patient's view! Please navigate to Questionnaire in the sidebar")
+"""Before you begin filling out the questionnaire, we want you to know how your information will be handled. The answers you provide will be used to calculate your risk of developing diabetes. Your results will be shared with your physician, and you may be contacted for further follow-up if needed.
 
+All information is managed securely and in line with privacy regulations, and will only be used for your medical care.
+
+If you have any questions, please contact RandomName Primary Care Central."""
+
+
+if st.button("Start questionnaire"): 
+    st.switch_page("pages/Questionnaire.py")
