@@ -4,16 +4,29 @@ import streamlit as st
 st.sidebar.image("./assets/LogoFindabetes.png",)
 st.sidebar.success("Select a tab above.")
 
+
 with st.form("my_form"):
     st.write("# Questionnaire")
     st.write(" ### Fill out the form below. The answers will be sent to your physician for further assessment.")
     st.write("By proceeding, you consent to your responses being collected and used for medical purposes in accordance with Findabetes' data handling and privacy policy. Please read more at XXX.")
     st.checkbox("I agree to the terms.")
 
+    st.write("-------------------------------------------------------------------------------")
+
+    option = st.radio(
+    "Choose your gender.",
+    ["Female", "Male"],
+    index=None,
+    key=1,
+)
+    #Should be decided on an acceptable interval!
+    number = st.number_input(
+    "Enter your age", value=None,
+)
     
     option = st.radio(
     "Select the level of your blood pressure",
-    ["Low", "High"],
+    ["Normal", "High"],
     index=None,
     key=10,
 )
@@ -55,21 +68,21 @@ with st.form("my_form"):
 )
 
     option = st.radio(
-    "Do you consume fruit 1 or more times per day??",
+    "Do you consume fruit at least one time per day?",
     ["No", "Yes"],
     index=None,
     key=5,
 )
 
     option = st.radio(
-    "Do you consume vegetables 1 or more times per day??",
+    "Do you consume vegetables at least one time per day?",
     ["No", "Yes"],
     index=None,
     key=4,
 )
 
     option = st.radio(
-    "Do you drink more than 14 drinks (as a man) or 7 drinks (as a woman) per week?",
+    "Do you drink more than 14 alcoholic beverages (as a man) or 7 alcoholic beverages (as a woman) per week?",
     ["No", "Yes"],
     index=None,
     key=3,
@@ -82,44 +95,7 @@ with st.form("my_form"):
 
     ##  A slider may not be the best option, but we'll go with that for now. 
     option = st.select_slider(
-        "Now thinking about your mental health, which includes stress, depression, and problems with emotions, for how many days during the past 30 days was your mental health ***not*** good?",
-        options=[
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20",
-        "21",
-        "22",
-        "23",
-        "24",
-        "25",
-        "26",
-        "27",
-        "28",
-        "29",
-        "30",
-    ],
-)
-
-    option = st.select_slider(
-        "Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health ***not*** good?",
+        "How many days the past 30 days have you experienced any mental health problems",
         options=[
         "0",
         "1",
@@ -161,16 +137,6 @@ with st.form("my_form"):
     key=2,
 )
 
-    option = st.radio(
-    "Choose your gender.",
-    ["Female", "Male"],
-    index=None,
-    key=1,
-)
-    #Should be decided on an acceptable interval!
-    number = st.number_input(
-    "Enter your age", value=None,
-)
     
     submitted = st.form_submit_button("Submit")
     ## Have to enter more code in this button once the dataset is loaded!
