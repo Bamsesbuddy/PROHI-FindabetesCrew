@@ -1,2 +1,2 @@
-BP,BMI,Smoker,Stroke,HeartDisease,PhysAct,fruits,veggies,Drinks,gen_health,mental_health,diff_walk,gender,age
-1,24,0,1,1,1,0,0,1,3,2,0,1,23
+High BP,BMI,Smoker,Stroke,Heart Disease or Attack,Physical Activity,Fruits,Veggies,Heavy Alcohol Consumption,General Health,Mental Health,Difficulties Walking,Gender,Age
+1,27,0,1,1,0,0,1,1,3,10,1,1,23

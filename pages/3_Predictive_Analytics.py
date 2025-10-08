@@ -24,6 +24,7 @@ loaded_model = joblib.load(pre_trained_model_path)
 
 if st.button('Predict!'):
     user_data = pd.read_csv('data/input_data.csv')
+
     prediction = loaded_model.predict_proba(user_data)[0]
     # st.write(f"The predicted value is {prediction}")
 
