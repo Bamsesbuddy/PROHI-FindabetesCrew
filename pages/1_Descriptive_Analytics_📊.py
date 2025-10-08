@@ -130,3 +130,33 @@ st.plotly_chart(fig, use_container_width=True)
 #fig = px.line_polar(df, r='r', theta='theta', line_close=True)
 
 #st.plotly_chart(fig, use_container_width=True)
+
+
+list_of_selected_features = st.multiselect("Select the features you want displayed", X.columns.tolist(), default=X.columns.tolist())
+# features to pick shouldnt contain target diabetes. 
+for f in features:
+    # Count how many with and without diabetes (only for rows where feature == 1)
+    counts = X[X[f] == 1]["Diabetes_binary"].value_counts(normalize=True) * 100
+
+counts = (
+    counts
+    .groupby(["feature", "Diabetes_binary"])
+    .size()
+    .groupby(level=0)
+    .apply(lambda s: s / s.sum() * 100)
+    .reset_index(name="percentage"))
+
+fig = px.bar(
+    counts,
+    x="percentage",
+    y= list_of_selected_features,
+    color="Diabetes_binary",
+    barmode="stack",
+    orientation="h",
+    labels={
+        "feature": "features",
+        "Diabetes_binary": "Diabetes (0=No, 1=Yes)",
+        "percentage": "Percentage (%)"
+    },
+    text="percentage"
+)
