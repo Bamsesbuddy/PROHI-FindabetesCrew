@@ -45,7 +45,7 @@ if st.button('Predict!'):
 
     with st.container(border=True):
         bool_map = {0: "No", 1: "Yes"}
-        geneder_map = {0: 'Female', 1: 'Male'}
+        gender_map = {0: "Female", 1: "Male"}
         col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
             st.metric(label="High Blood Pressure", value=bool_map[user_data.iloc[0, 0]])
@@ -62,11 +62,10 @@ if st.button('Predict!'):
         with col4:
             st.metric(label="General Health", value=user_data.iloc[0,9])
             st.metric(label="Mental Health", value=user_data.iloc[0,10])
-            st.metric(label="Physical Health", value=user_data.iloc[0,11])
         with col5:
-            st.metric(label="Difficulty Walking", value=bool_map[user_data.iloc[0, 12]])
-            st.metric(label="Gender", value=geneder_map[user_data.iloc[0, 13]])
-            st.metric(label="Age", value=user_data.iloc[0,14])
+            st.metric(label="Difficulty Walking", value=bool_map[user_data.iloc[0, 11]])
+            st.metric(label="Gender", value=gender_map[user_data.iloc[0, 12]])
+            st.metric(label="Age", value=user_data.iloc[0,13])
 
 ## Button that redirects us to Prescriptive Analytics, page 4
 if st.button("See detailed view"): 
