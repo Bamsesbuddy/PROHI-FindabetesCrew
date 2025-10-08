@@ -10,7 +10,7 @@ st.sidebar.image("./assets/LogoFindabetes.png",)
 # The code for storing the processed dataset data.csv
 @st.cache_data
 def load_data():
-    return pd.read_csv("jupyter-notebooks/data.csv")
+    return pd.read_csv("data/data.csv")
 X = load_data()
 
 # Plotting a dataframe
