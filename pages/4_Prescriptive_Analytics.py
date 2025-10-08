@@ -3,13 +3,14 @@ import joblib
 import shap
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.special import expit
 
 st.set_page_config(layout="wide")
 
 st.markdown("# Patient prescription 🎯")
 
 # Load model
-pre_trained_model_path = "./assets/best_model_so_far.pkl"
+pre_trained_model_path = "./jupyter-notebooks/hgb_classifier.pkl"
 model = joblib.load(pre_trained_model_path)
 
 X = pd.read_csv("data/input_data.csv")  # THIS must match the features (columns) the model expects
@@ -21,7 +22,7 @@ X = pd.read_csv("data/input_data.csv")  # THIS must match the features (columns)
 # ---- build a SHAP explainer (robust with fallbacks) ----
 try:
     # Preferred: generic Explainer with model + background
-    explainer = shap.Explainer(model, X)       # will pick a good backend if possible
+    explainer = shap.Explainer(model, feature_names=X.columns)
 except Exception as e:
     st.write("shap.Explainer() failed:", e)
     # Try TreeExplainer (fast for tree models)
@@ -36,19 +37,17 @@ except Exception as e:
 
 # ---- compute SHAP values (new API) ----
 shap_expl = explainer(X)   # returns shap.Explanation
-# show shapes for debugging
-try:
-    st.write("shap values shape:", shap_expl.values.shape)
-    st.write("base_values shape:", shap_expl.base_values.shape)
-except Exception:
-    st.write("Could not show shapes; continuing to plotting.")
+prob = model.predict_proba(X)
+base_logit = explainer.expected_value
+shap_sum_logit = base_logit + shap_expl.values.sum()
+shap_prob = expit(shap_sum_logit)
 
 col1, col2 = st.columns(2)
 # ---- Global summary plot (beeswarm) ----
 with col1:
     fig = plt.figure(figsize=(8, 4))
     # using new API plotting helper: beeswarm is a matplotlib plot
-    shap.plots.beeswarm(shap_expl[:, :, 1])   # or shap.plots.bar(shap_expl) for aggregated importance
+    shap.plots.beeswarm(shap_expl[:, :])   # or shap.plots.bar(shap_expl) for aggregated importance
     plt.tight_layout()
     st.pyplot(fig)
 
@@ -56,6 +55,11 @@ with col2:
     # ---- Local explanation for instance 0: waterfall ----
     i = 0  # pick an instance index; change as needed or loop
     fig = plt.figure(figsize=(8, 4))
-    shap.plots.waterfall(shap_expl[i, :, 1])   # waterfall works well for one instance
+    shap.plots.waterfall(shap_expl[i, :])   # waterfall works well for one instance
     plt.tight_layout()
     st.pyplot(fig)
+
+
+### Link to giudelines (recommendations outside of scope)
+
+### GenAI model 

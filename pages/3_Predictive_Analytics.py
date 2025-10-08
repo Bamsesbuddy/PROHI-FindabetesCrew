@@ -19,7 +19,7 @@ st.write("# Example of model prediction")
 
 
 # Load model
-pre_trained_model_path = "./assets/best_model_so_far.pkl"
+pre_trained_model_path = "./jupyter-notebooks/hgb_classifier.pkl"
 loaded_model = joblib.load(pre_trained_model_path)
 
 if st.button('Predict!'):
