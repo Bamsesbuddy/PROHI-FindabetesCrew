@@ -3,6 +3,12 @@ import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
 
+#Added theme colors for the bar charts.
+THEME_COLORS = {
+    "borderColor": "#4682b4",
+    "chartCategoricalColors": ["#4682b4", "#F0EEE6"]
+}
+
 st.sidebar.markdown("# Descriptive Analytics")
 st.sidebar.image("./assets/LogoFindabetes.png",)
 
@@ -16,6 +22,7 @@ st.markdown("In this section you will gather more information about the statisti
 def load_data():
     return pd.read_csv("data/data.csv")
 df = load_data()
+
 
 # Target and available features
 target = "Diabetes_binary"
@@ -48,7 +55,8 @@ if selected_features:
 
     # --- Plot ---
     fig, ax = plt.subplots(figsize=(9, 6))
-    plot_df.plot(kind="barh", stacked=True, ax=ax)
+    plot_df.plot(kind="barh", stacked=True, ax=ax, color=THEME_COLORS["chartCategoricalColors"][:2]  # two categories → two colors
+    )
 
     ax.set_xlim(0, 100)
     ax.set_xlabel("Percent (%)")
@@ -168,7 +176,7 @@ labels = df["Diabetes_binary"].map({0: "No diabetes", 1: "Diabetes"})
 fig = px.pie(
     names=labels,                 
     color=labels,
-    color_discrete_map={"No diabetes": "#1f77b4", "Diabetes": "#ff7f0e"},
+    color_discrete_map={"No diabetes": "#4682b4", "Diabetes": "#F0EEE6"},
     hole=0.3,                     
     title="Proportion of Participants with and without Diabetes"
 )
@@ -188,34 +196,3 @@ st.plotly_chart(fig, use_container_width=True)
 
 # import plotly.figure_factory as ff
 
-# Add histogram data
-# x1 = np.random.randn(200) - 2
-# x2 = np.random.randn(200)
-# x3 = np.random.randn(200) + 2
-
-# Group data together
-# hist_data = [x1, x2, x3]
-
-# group_labels = ['Group 1', 'Group 2', 'Group 3']
-
-# Create distplot with custom bin_size
-# fig = ff.create_distplot(
-#        hist_data, group_labels, bin_size=[.1, .25, .5])
-
-# Plot!
-# st.plotly_chart(fig, use_container_width=True)
-
-
-## Plot two
-
-# import plotly.express as px
-# import pandas as pd
-# df = pd.DataFrame(dict(
-#     r=[1, 5, 2, 2, 3],
-#   theta=['processing cost','mechanical properties','chemical stability',
-#          'thermal stability', 'device integration']))
-#fig = px.line_polar(df, r='r', theta='theta', line_close=True)
-
-#st.plotly_chart(fig, use_container_width=True)
-# list_of_selected_features = st.multiselect("Select the features you want displayed", X.columns.tolist(), default=X.columns.tolist())
-# features to pick shouldnt contain target diabetes. 
