@@ -11,7 +11,7 @@ from PIL import Image
 import base64
 import requests
 import json
-import time
+import warnings
 
 st.set_page_config(layout="wide")
 
@@ -21,7 +21,7 @@ st.sidebar.image("./assets/LogoFindabetes.png")
 st.markdown("# Patient prescription 🎯")
 
 # Load model
-pre_trained_model_path = "./jupyter-notebooks/hgb_classifier.pkl"
+pre_trained_model_path = "./jupyter-notebooks/hgb_classifier_V2.pkl"
 model = joblib.load(pre_trained_model_path)
 
 X = pd.read_csv("data/input_data.csv")  # THIS must match the features (columns) the model expects
@@ -48,7 +48,7 @@ except Exception as e:
 
 # ---- compute SHAP values (new API) ----
 shap_expl = explainer(X)   # returns shap.Explanation
-prob = model.predict_proba(X)
+prob = model.predict_proba(X.values)
 base_logit = explainer.expected_value
 shap_sum_logit = base_logit + shap_expl.values.sum()
 shap_prob = expit(shap_sum_logit)
@@ -58,13 +58,14 @@ st.header('Patient-Level Insights')
 col1, col2 = st.columns(2)
 # ---- Global summary plot (beeswarm) ----
 with col1:
-
+    warnings.filterwarnings("ignore", message="FigureCanvasAgg is non-interactive")
     fig_bar = plt.figure(figsize=(8, 4))
     shap.plots.bar(shap_expl) 
     plt.tight_layout()
     st.pyplot(fig_bar)
 
 with col2: 
+    warnings.filterwarnings("ignore", message="FigureCanvasAgg is non-interactive")
     fig_waterfall = plt.figure(figsize=(8, 4))
     shap.plots.waterfall(shap_expl[0])
     plt.tight_layout()
@@ -80,14 +81,14 @@ col1, col2 = st.columns(2)
 with col1:
     st.write("Adjust the top 5 most important features and observe how the model’s prediction changes.")
     for i, feature in enumerate(top_features_list):
-        if feature in ['High BP', 'Smoker','Stroke','Heart Disease or Attack','Physical Activity','Fruits','Veggies','Heavy Alcohol Consumption', 'Difficulties Walking']:
+        if feature in ['High BP', 'Smoker','Stroke','Heart Disease or Attack','Physical Activity','Fruits','Veggies', 'Difficulties Walking']:
             default_value = 'Yes' if int(X[feature]) > 0.5 else 'No'
             value = st.select_slider(label=f'{feature} - Yes or No: ', options=['Yes', 'No'], value=default_value)
             X[feature] = 1 if value == 'Yes' else 0
         elif feature in ['BMI', 'General Health', 'Mental Health']:
             X[feature] = st.number_input(label=f'Select {feature}: ', value=X[feature])
         elif feature in ['Age']:
-            X[feature] = st.slider(label=f'Select {feature}: ', min_value=0, max_value=100, value=int(X[feature]))
+            X[feature] = st.slider(label=f'Select {feature}: ', min_value=1, max_value=13, value=int(X[feature]))
 
 with col2:
     pred_prob = model.predict_proba(X)[0, 1]

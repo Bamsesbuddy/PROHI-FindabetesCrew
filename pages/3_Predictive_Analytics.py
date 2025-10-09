@@ -19,10 +19,11 @@ st.write("# Example of model prediction")
 
 
 # Load model
-pre_trained_model_path = "./jupyter-notebooks/hgb_classifier.pkl"
+pre_trained_model_path = "./jupyter-notebooks/hgb_classifier_V2.pkl"
 loaded_model = joblib.load(pre_trained_model_path)
 
-if st.button('Predict!'):
+button_press_bool = st.button('Predict!')
+if button_press_bool:
     user_data = pd.read_csv('data/input_data.csv')
 
     prediction = loaded_model.predict_proba(user_data)[0]
@@ -65,14 +66,14 @@ if st.button('Predict!'):
         with col3:
             st.metric(label="Fruits", value=bool_map[user_data.iloc[0, 6]])
             st.metric(label="Veggies", value=bool_map[user_data.iloc[0, 7]])
-            st.metric(label="Alcohol Abuse", value=bool_map[user_data.iloc[0, 8]])
+            # st.metric(label="Alcohol Abuse", value=bool_map[user_data.iloc[0, 8]])
         with col4:
-            st.metric(label="General Health", value=user_data.iloc[0,9])
-            st.metric(label="Mental Health", value=user_data.iloc[0,10])
+            st.metric(label="General Health", value=user_data.iloc[0,8])
+            st.metric(label="Mental Health", value=user_data.iloc[0,9])
         with col5:
-            st.metric(label="Difficulty Walking", value=bool_map[user_data.iloc[0, 11]])
-            st.metric(label="Gender", value=gender_map[user_data.iloc[0, 12]])
-            st.metric(label="Age", value=user_data.iloc[0,13])
+            st.metric(label="Difficulty Walking", value=bool_map[user_data.iloc[0, 10]])
+            st.metric(label="Gender", value=gender_map[user_data.iloc[0, 11]])
+            st.metric(label="Age", value=user_data.iloc[0,12])
 
 ## Button that redirects us to Prescriptive Analytics, page 4
 if st.button("See detailed view"): 
