@@ -14,7 +14,6 @@ st.sidebar.image("./assets/LogoFindabetes.png",)
 
 st.markdown("# Descriptive Analytics")
 
-st.markdown("## Statistical analytics performed on the data set")
 st.markdown("In this section you will gather more information about the statistical analysis performed on the data set.")
 
 # The code for storing the processed dataset data.csv
@@ -33,7 +32,7 @@ features = [
 ]
 
 #Q1: Stacked horizontal diabetes yes/no
-st.markdown("## Diabetes prevalence in every feature")
+st.markdown("## Diabetes prevalence per feature")
 st.markdown("We found it useful to understand the percentage of people with diabetes and how they reported the features mentioned. This selectbox allows you to view each feature and the prevalence of diabetes in these features.")
 
 # Let user select which features to display

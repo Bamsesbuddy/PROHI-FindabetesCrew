@@ -17,7 +17,6 @@ st.write("# Welcome to Findabetes,")
 st.write("## Every Clinician's favorite screening tool for predicting diabetes risk.")
 st.markdown("<br>", unsafe_allow_html=True)
 st.write("Findabetes is designed to support your clinical workflow by providing fast, data-driven insights into your patients’ diabetes risk. Our prediction model is powered by machine learning, using information gathered from each patient’s questionnaire to deliver accurate and interpretable results.")
-st.markdown("<br>", unsafe_allow_html=True)
 
 st.markdown("""
 You can explore the system through the following sections:  
