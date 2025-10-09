@@ -12,7 +12,7 @@ THEME_COLORS = {
 st.sidebar.markdown("# Descriptive Analytics")
 st.sidebar.image("./assets/LogoFindabetes.png",)
 
-st.markdown("# Descriptive Analytics 📊")
+st.markdown("# Descriptive Analytics")
 
 st.markdown("## Statistical analytics performed on the data set")
 st.markdown("In this section you will gather more information about the statistical analysis performed on the data set.")

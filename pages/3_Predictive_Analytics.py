@@ -6,9 +6,9 @@ from pages.helper import make_donut
 
 st.set_page_config(layout="wide")
 
-st.markdown("# Patient prediction 🎯")
+st.markdown("# Patient prediction")
 
-st.sidebar.markdown("# Patient prediction 🎯")
+st.sidebar.markdown("# Patient prediction")
 st.sidebar.image("./assets/LogoFindabetes.png")
 
 """
