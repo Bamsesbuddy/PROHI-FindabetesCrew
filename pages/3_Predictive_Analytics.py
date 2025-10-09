@@ -38,10 +38,17 @@ if st.button('Predict!'):
         else:
             st.image("./assets/FindabetesLowrisk.png", width=500)
     with right_column:
+        # Donut chart for no diabetes risk
         donut_class_zero = make_donut(int(prediction[0] * 100), 'Outbound Migration', 'green')
-        st.altair_chart(donut_class_zero)
+        st.markdown("<h2 style='text-align: center;'>Absence of Type-2 Diabetes Risk</h2>", unsafe_allow_html=True)
+        st.altair_chart(donut_class_zero, use_container_width=True)
+
+        st.divider()
+
+        # Donut chart for diabetes risk
         donut_class_one = make_donut(int(prediction[1] * 100), 'Outbound Migration', 'red')
-        st.altair_chart(donut_class_one)
+        st.markdown("<h2 style='text-align: center;'>Risk of Type-2 Diabetes</h2>", unsafe_allow_html=True)
+        st.altair_chart(donut_class_one, use_container_width=True)
 
     with st.container(border=True):
         bool_map = {0: "No", 1: "Yes"}
