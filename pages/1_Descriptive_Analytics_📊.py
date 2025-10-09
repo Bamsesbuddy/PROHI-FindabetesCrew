@@ -43,10 +43,10 @@ if selected_features:
     # Calculate percentage of diabetes vs no diabetes per selected feature
     for f in selected_features:
         counts = df[df[f] == 1][target].value_counts(normalize=True) * 100
-        plot_df.loc[f, "No diabetes"] = counts.get(0, 0)
+        plot_df.loc[f, "No Diabetes"] = counts.get(0, 0)
         plot_df.loc[f, "Diabetes"] = counts.get(1, 0)
 
-    # --- Plot ---
+    # Plot
     fig, ax = plt.subplots(figsize=(9, 6))
     plot_df.plot(kind="barh", stacked=True, ax=ax)
 
@@ -56,6 +56,20 @@ if selected_features:
     ax.legend(title="Diabetes", bbox_to_anchor=(1.05, 1), loc="upper left")
     ax.grid(False)
     plt.tight_layout()
+
+    # --- Add annotations ---
+    for i, (idx, row) in enumerate(plot_df.iterrows()):
+        left = 0
+        for category in plot_df.columns:
+            value = row[category]
+            if value > 3:  # only annotate if the segment is large enough to fit text
+                ax.text(
+                    left + value / 2,        # x position (middle of the bar segment)
+                    i,                       # y position
+                    f"{value:.1f}%",         # text label
+                    ha='center', va='center', color='white', fontsize=9, fontweight='bold'
+                )
+            left += value  # move to next stacked segment
 
     st.pyplot(fig)
 
@@ -180,42 +194,94 @@ fig.update_traces(
 
 fig.update_layout(width=500, height=500, showlegend=False)
 st.plotly_chart(fig, use_container_width=True)
-# Add here some descriptive analytics with Widgets and Plots
-
-### ⚠️ In-class exercise: Integrate a plot from plotly examples
-
-# 🔗 Link: <https://plotly.com/python/scientific-charts/>
-
-# import plotly.figure_factory as ff
-
-# Add histogram data
-# x1 = np.random.randn(200) - 2
-# x2 = np.random.randn(200)
-# x3 = np.random.randn(200) + 2
-
-# Group data together
-# hist_data = [x1, x2, x3]
-
-# group_labels = ['Group 1', 'Group 2', 'Group 3']
-
-# Create distplot with custom bin_size
-# fig = ff.create_distplot(
-#        hist_data, group_labels, bin_size=[.1, .25, .5])
-
-# Plot!
-# st.plotly_chart(fig, use_container_width=True)
 
 
-## Plot two
+# ------ Boxplot Distribution Plot ------
+st.markdown("## Distribution of BMI values per age group grouped by diabetes in the dataset")
+st.markdown("How is the BMI distributed per age group related to our target class of diabetes")
 
-# import plotly.express as px
-# import pandas as pd
-# df = pd.DataFrame(dict(
-#     r=[1, 5, 2, 2, 3],
-#   theta=['processing cost','mechanical properties','chemical stability',
-#          'thermal stability', 'device integration']))
-#fig = px.line_polar(df, r='r', theta='theta', line_close=True)
+age_bins = [18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, float('inf')]
+age_labels = ['18–24', '25–29', '30–34', '35–39', '40–44', '45–49',
+              '50–54', '55–59', '60–64', '65–69', '70–74', '75–79', '80+']
 
-#st.plotly_chart(fig, use_container_width=True)
-# list_of_selected_features = st.multiselect("Select the features you want displayed", X.columns.tolist(), default=X.columns.tolist())
-# features to pick shouldnt contain target diabetes. 
+# --- Create AgeGroup variable ---
+df["AgeGroup"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=False)
+
+fig = px.box(
+    df,
+    x="Age",
+    y="BMI",
+    color="Diabetes_binary",
+    color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
+    points="outliers",  # show outliers as individual points
+    labels={
+        "AgeGroup": "Age Group",
+        "BMI": "BMI",
+        "Diabetes": "Diabetes Status"
+    },
+    title="BMI Distribution by Age Group and Diabetes Status",
+)
+
+# --- Customize layout ---
+fig.update_layout(
+    boxmode="group",  # side-by-side boxes per age group
+    xaxis_title="Age",
+    yaxis_title="BMI",
+    legend_title="Diabetes",
+    legend=dict(
+        x=1.02,
+        y=1,
+        bgcolor='rgba(0,0,0,0)',
+        bordercolor='rgba(0,0,0,0)'
+    ),
+    title_font=dict(size=16, family="Arial", color="black"),
+    plot_bgcolor="white",
+    paper_bgcolor="white",
+)
+
+# --- Optional: tidy gridlines ---
+fig.update_xaxes(showgrid=False)
+fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
+
+# --- Display in Streamlit ---
+st.plotly_chart(fig, use_container_width=True)
+
+
+fig = px.box(
+    df,
+    x="Age",
+    y="MentHlth",
+    color="Diabetes_binary",
+    color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
+    points="outliers",  # show outliers as individual points
+    labels={
+        "AgeGroup": "Age Group",
+        "MentHlth": "Mental Health",
+        "Diabetes": "Diabetes Status"
+    },
+    title="Mental Health Distribution by Age Group and Diabetes Status",
+)
+
+# --- Customize layout ---
+fig.update_layout(
+    boxmode="group",  # side-by-side boxes per age group
+    xaxis_title="Age",
+    yaxis_title="Mental Health",
+    legend_title="Diabetes",
+    legend=dict(
+        x=1.02,
+        y=1,
+        bgcolor='rgba(0,0,0,0)',
+        bordercolor='rgba(0,0,0,0)'
+    ),
+    title_font=dict(size=16, family="Arial", color="black"),
+    plot_bgcolor="white",
+    paper_bgcolor="white",
+)
+
+# --- Optional: tidy gridlines ---
+fig.update_xaxes(showgrid=False)
+fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
+
+# --- Display in Streamlit ---
+st.plotly_chart(fig, use_container_width=True)
