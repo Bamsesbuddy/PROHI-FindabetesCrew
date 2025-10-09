@@ -14,15 +14,21 @@ st.sidebar.success("Select a tab above.")
 st.write("# Welcome to Findabetes,")
 
 
-
-st.write("## Every Clinician's favorite screening tool for predicting risk for diabetes.")
+st.write("## Every Clinician's favorite screening tool for predicting diabetes risk.")
 st.markdown("<br>", unsafe_allow_html=True)
-st.write("Our tool is meant to help clinicians digitally and more easily recieve data from patients and predict whether the patients have a risk of developing diabetes type 2. Our prediction is based on different features, asked in the patient questionnaire.")
-    
+st.write("Findabetes is designed to support your clinical workflow by providing fast, data-driven insights into your patients’ diabetes risk. Our prediction model is powered by machine learning, using information gathered from each patient’s questionnaire to deliver accurate and interpretable results.")
 st.markdown("<br>", unsafe_allow_html=True)
 
-st.write("To explore the data you can view the descriptive page, to see more about how the statistical analysis has been performed. Our diagnostic page will give insights into how the statistical analysis is applied to the data set. To see patient instances, view predictive analytics, as well as prescriptive analytics explaining the prediction for that specific instance.")
-        
+st.markdown("""
+You can explore the system through the following sections:  
+
+**Descriptive Analysis** - Discover the characteristics of the dataset used to train our model.  
+**Diagnostic Insights** - Understand how statistical and analytical methods are applied to the data.  
+**Predictive & Prescriptive Tools** - View personalized predictions for your patients and explore potential clinical actions.  
+""")
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.write("Findabetes brings together data science and clinical expertise - helping you make informed decisions, faster.")
 
 ## Button that redirects us to Prescriptive Analytics, page 4
 if st.button("Get started"): 
