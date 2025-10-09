@@ -13,19 +13,17 @@ st.sidebar.success("Select a tab above.")
 
 st.write("# Welcome to Findabetes,")
 
-col1, col2 = st.columns(2)
 
-with col1:  
-    st.write("## Every Clinician's favorite screening tool for predicting risk for diabetes.")
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.write("Our tool is meant to help clinicians digitally and more easily recieve data from patients and predict whether the patients have a risk of developing diabetes type 2. Our prediction is based on different features, asked in the patient questionnaire.")
+
+st.write("## Every Clinician's favorite screening tool for predicting risk for diabetes.")
+st.markdown("<br>", unsafe_allow_html=True)
+st.write("Our tool is meant to help clinicians digitally and more easily recieve data from patients and predict whether the patients have a risk of developing diabetes type 2. Our prediction is based on different features, asked in the patient questionnaire.")
     
-    st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
-    st.write("To explore the data you can view the descriptive page, to see more about how the statistical analysis has been performed. Our diagnostic page will give insights into how the statistical analysis is applied to the data set. To see patient instances, view predictive analytics, as well as prescriptive analytics explaining the prediction for that specific instance.")
+st.write("To explore the data you can view the descriptive page, to see more about how the statistical analysis has been performed. Our diagnostic page will give insights into how the statistical analysis is applied to the data set. To see patient instances, view predictive analytics, as well as prescriptive analytics explaining the prediction for that specific instance.")
         
 
-with col2: 
-    ## Button that redirects us to Prescriptive Analytics, page 4
-    if st.button("Get started"): 
-        st.switch_page("pages/1_Descriptive_Analytics.py")
+## Button that redirects us to Prescriptive Analytics, page 4
+if st.button("Get started"): 
+    st.switch_page("pages/1_Descriptive_Analytics.py")
