@@ -9,7 +9,7 @@ st.set_page_config(layout="wide")
 st.markdown("# Patient prediction 🎯")
 
 st.sidebar.markdown("# Patient prediction 🎯")
-
+st.sidebar.image("./assets/LogoFindabetes.png")
 
 """
 ⚠️ Add here some predictive analytics with Widgets and Plots 

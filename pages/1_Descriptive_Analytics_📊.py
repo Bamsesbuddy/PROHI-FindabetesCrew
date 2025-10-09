@@ -3,10 +3,13 @@ import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
 
-st.markdown("# Descriptive Analytics 📊")
-
 st.sidebar.markdown("# Descriptive Analytics")
 st.sidebar.image("./assets/LogoFindabetes.png",)
+
+st.markdown("# Descriptive Analytics 📊")
+
+st.markdown("## Statistical analytics performed on the data set")
+st.markdown("In this section you will gather more information about the statistical analysis performed on the data set.")
 
 # The code for storing the processed dataset data.csv
 @st.cache_data
@@ -14,8 +17,6 @@ def load_data():
     return pd.read_csv("data/data.csv")
 df = load_data()
 
-
-#Q1: Stacked horizontal diabetes yes/no
 # Target and available features
 target = "Diabetes_binary"
 features = [
@@ -24,11 +25,15 @@ features = [
     "Sex", "DiffWalk"
 ]
 
+#Q1: Stacked horizontal diabetes yes/no
+st.markdown("## Diabetes prevalence in every feature")
+st.markdown("We found it useful to understand the percentage of people with diabetes and how they reported the features mentioned. This selectbox allows you to view each feature and the prevalence of diabetes in these features.")
+
 # Let user select which features to display
 selected_features = st.multiselect(
     label="Choose the features for display:",
     options=features,
-    default=None  # optional: pre-select allstr
+    default=None
 )
 
 # Only proceed if at least one feature is selected
@@ -60,30 +65,38 @@ else:
 
 
 # Q2  What is the distribution of diabetes vs. no diabetes in lifestyle-related features?
-st.markdown("## Distribution of Diabetes yes/no realted to different lifestyle features.")
+st.markdown("More interestingly we looked specifically at the distribution of diabetes related to different lifestyle features.")
 
 Lifestyle_features = [
     "HighBP", "Smoker", "PhysActivity",
     "Fruits", "Veggies", "HvyAlcoholConsump",
 ]
 
-chosen_lifestyle_features = st.selectbox(options=Lifestyle_features, label="Select the lifestyle feature to see distribution")
+chosen_lifestyle_features = st.multiselect(
+    options=Lifestyle_features, 
+    label="Select the lifestyle feature to see distribution", 
+    default=None)
 
-# Create a crosstab to see the relationship between HighBP and Diabetes_binary
-crosstab = pd.crosstab((chosen_lifestyle_features), df["Diabetes_binary"])
+if chosen_lifestyle_features:
+    # Create a crosstab to see the relationship between the chosen feature and Diabetes_binary
+    crosstab = pd.crosstab((chosen_lifestyle_features), df["Diabetes_binary"])
 
-# Plot the crosstab
-crosstab.plot(kind="bar", stacked=True)
+    # Plot the crosstab
+    crosstab.plot(kind="bar", stacked=True)
 
-plt.title("Proportion of Diabetes cases by lifestyle-related feature of your choice")
-plt.xlabel("Lifestyle feature")
-plt.ylabel("Count")
-plt.legend(title="Diabetes")
-plt.grid(False)
-st.pyplot(plt)
+    plt.title("Proportion of Diabetes cases by lifestyle-related feature of your choice")
+    plt.xlabel("Lifestyle feature")
+    plt.ylabel("Count")
+    plt.legend(title="Diabetes")
+    plt.grid(False)
+    st.pyplot(plt)
+else: 
+    st.warning("Please select at least one feature to display.")
+
 
 #Q3 
 st.markdown("## Diabetes prevalence in different age groups")
+st.markdown("We were also interested to see how the age affected the prevalence of diabetes. First we seperated our data into groups of age as shown in the table below.")
 age_groups = ['18–24', '25–29', '30–34', '35–39', '40–44', '45–49',
               '50–54', '55–59', '60–64', '65–69', '70–74', '75–79', '80+']
 prev = df.groupby('Age')['Diabetes_binary'].mean().reindex(range(1,14)) * 100
@@ -124,6 +137,7 @@ st.pyplot(plt)
 #Q4
 # Display BMI 
 st.markdown("## The prevalence of diabetes at different BMI-values")
+st.markdown("An increased BMI is a known risk for diabetes. We decided to check our dataset to see if this was also supported by our data.")
 # Calculate IQR (Interquartile Range)
 Q1 = df["BMI"].quantile(0.25)
 Q3 = df["BMI"].quantile(0.75)
@@ -148,6 +162,7 @@ st.pyplot(plt)
 
 #Q5: Displaying prevalence of diabetes yes/no 
 st.markdown("## Prevalence of diabetes in the dataset")
+st.markdown("It is also interesting to see how our target class of diabetes distribution within the data set. It is clear that there is a class imbalance, which will be accounted for when training the model.")
 labels = df["Diabetes_binary"].map({0: "No diabetes", 1: "Diabetes"})
 
 fig = px.pie(
@@ -204,66 +219,3 @@ st.plotly_chart(fig, use_container_width=True)
 #st.plotly_chart(fig, use_container_width=True)
 # list_of_selected_features = st.multiselect("Select the features you want displayed", X.columns.tolist(), default=X.columns.tolist())
 # features to pick shouldnt contain target diabetes. 
-
-fig = px.bar(
-    df,
-    x= st.selectbox("Select the features you want displayed", options=df.columns),
-    y= counts("percentage"),
-    color="Diabetes_binary",
-    barmode="stack",
-    orientation="h",
-    labels={
-        "feature": "features",
-        "Diabetes_binary": "Diabetes (0=No, 1=Yes)",
-        "percentage": "Percentage (%)"
-    },
-    text="percentage"
-)
-
-
-st.subheader("Diabetes distribution for features (100% stacked, single bar per feature)")
-
-features = ["HighBP", "Smoker", "PhysActivity", "HvyAlcoholConsump", "Sex", "DiffWalk", "Stroke", "Fruits", "Veggies"]
-
-# Melt: reshape into long form
-df_long = df.melt(
-    id_vars=["Diabetes_binary"],
-    value_vars=features,
-    var_name="feature",
-    value_name="value"
-)
-
-# Count rows per feature + diabetes status (ignore value=0/1 split)
-counts = (
-    df_long
-    .groupby(["feature", "Diabetes_binary"])
-    .size()
-    .reset_index(name="count")
-)
-
-# Normalize to 100% per feature
-counts["percentage"] = (
-    counts.groupby("feature")["count"]
-    .transform(lambda x: x / x.sum() * 100)
-)
-
-# Horizontal 100% stacked bar chart
-fig = px.bar(
-    counts,
-    x="percentage",
-    y="feature",
-    color="Diabetes_binary",
-    barmode="stack",
-    orientation="h",
-    labels={
-        "feature": "Feature",
-        "Diabetes_binary": "Diabetes (0=No, 1=Yes)",
-        "percentage": "Percentage (%)"
-    },
-)
-
-# Force x-axis to 0–100%
-fig.update_xaxes(range=[0, 100])
-
-st.plotly_chart(fig, use_container_width=True)
-
