@@ -9,6 +9,22 @@ bool_map = {'Yes': 1, 'No': 0}
 gender_map = {'Male': 1, 'Female': 0}
 bp_map = {'High': 1, 'Low': 0}
 
+def get_age_group_mapping(age):
+    if age < 18: return None
+    elif age <= 24: return 1
+    elif age <= 29: return 2
+    elif age <= 34: return 3
+    elif age <= 39: return 4
+    elif age <= 44: return 5
+    elif age <= 49: return 6
+    elif age <= 54: return 7
+    elif age <= 59: return 8
+    elif age <= 64: return 9
+    elif age <= 69: return 10
+    elif age <= 74: return 11
+    elif age <= 79: return 12
+    else: return 13
+
 
 with st.form("my_form"):
     st.write("# Questionnaire")
@@ -28,9 +44,9 @@ with st.form("my_form"):
 
     #Should be decided on an acceptable interval!
     number = st.number_input(
-        "Enter your age", value=None,
+        "Enter your age", value=None, min_value=18,
     )
-    age = number
+    age = get_age_group_mapping(number)
     
     option = st.radio(
         "Select the level of your blood pressure",
