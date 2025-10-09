@@ -1,2 +1,2 @@
-,BP,BMI,Smoker,Stroke,HeartDisease,PhysAct,fruits,veggies,Drinks,gen_health,mental_health,diff_walk,gender,age
-0,High,24.691358024691358,No,Yes,Yes,Yes,No,No,Yes,3 = Good,2,No,Male,23.0
+High BP,BMI,Smoker,Stroke,Heart Disease or Attack,Physical Activity,Fruits,Veggies,Heavy Alcohol Consumption,General Health,Mental Health,Difficulties Walking,Gender,Age
+1,27,0,1,1,0,0,1,1,3,10,1,1,23
