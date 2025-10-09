@@ -1,5 +1,8 @@
 import streamlit as st
 
+st.sidebar.markdown("# About us")
+st.sidebar.image("./assets/LogoFindabetes.png")
+
 st.markdown("# About Findabetes")
 
 st.markdown(" ## Information about the dataset")

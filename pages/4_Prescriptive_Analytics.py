@@ -15,6 +15,9 @@ import time
 
 st.set_page_config(layout="wide")
 
+st.sidebar.markdown("# Explainability of a specific instance")
+st.sidebar.image("./assets/LogoFindabetes.png")
+
 st.markdown("# Patient prescription 🎯")
 
 # Load model
