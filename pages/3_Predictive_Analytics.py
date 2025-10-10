@@ -2,7 +2,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 import altair as alt
-from pages.helper import make_donut
+from utils.helper import make_donut
 
 st.set_page_config(layout="wide")
 
@@ -40,14 +40,14 @@ if button_press_bool:
             st.image("./assets/FindabetesLowrisk.png", width=500)
     with right_column:
         # Donut chart for no diabetes risk
-        donut_class_zero = make_donut(int(prediction[0] * 100), 'Outbound Migration', 'green')
+        donut_class_zero = make_donut(int(prediction[0] * 100), 'Absence of Type-2 Diabetes Risk', 'green')
         st.markdown("<h2 style='text-align: center;'>Absence of Type-2 Diabetes Risk</h2>", unsafe_allow_html=True)
         st.altair_chart(donut_class_zero, use_container_width=True)
 
         st.divider()
 
         # Donut chart for diabetes risk
-        donut_class_one = make_donut(int(prediction[1] * 100), 'Outbound Migration', 'red')
+        donut_class_one = make_donut(int(prediction[1] * 100), 'Risk of Type-2 Diabetes', 'red')
         st.markdown("<h2 style='text-align: center;'>Risk of Type-2 Diabetes</h2>", unsafe_allow_html=True)
         st.altair_chart(donut_class_one, use_container_width=True)
 
