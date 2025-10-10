@@ -5,12 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.special import expit
 import numpy as np
-from pages.helper import make_donut
-import io
-from PIL import Image
-import base64
-import requests
-import json
+from utils.helper import make_donut, plot_to_base64, llama_vision, llama_data, huggingface_model
 import warnings
 
 st.set_page_config(layout="wide")
@@ -25,10 +20,6 @@ pre_trained_model_path = "./jupyter-notebooks/hgb_classifier_V2.pkl"
 model = joblib.load(pre_trained_model_path)
 
 X = pd.read_csv("data/input_data.csv")  # THIS must match the features (columns) the model expects
-
-# ---- IMPORTANT: make sure X is preprocessed exactly like during training ----
-# If your model is a sklearn Pipeline that does preprocessing internally, you can pass raw X.
-# If the model expects numeric preprocessed arrays, apply same preprocessing here (encoder/scaler).
 
 # ---- build a SHAP explainer (robust with fallbacks) ----
 try:
@@ -93,7 +84,7 @@ with col1:
 with col2:
     pred_prob = model.predict_proba(X)[0, 1]
     # Donut chart for diabetes risk
-    donut_class_one = make_donut(int(pred_prob * 100), 'Outbound Migration', 'red')
+    donut_class_one = make_donut(int(pred_prob * 100), 'Type-2 Diabetes Risk', 'red')
     st.markdown("<h2 style='text-align: center;'>Risk of Type-2 Diabetes</h2>", unsafe_allow_html=True)
     st.altair_chart(donut_class_one, use_container_width=True)
 
@@ -101,38 +92,19 @@ with col2:
 ### Link to giudelines (recommendations outside of scope)
 
 ### GenAI model 
-def plot_to_base64(fig):
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png")
-    buf.seek(0)
-    img = Image.open(buf)
-    buffered = io.BytesIO()
-    img.save(buffered, format="PNG")
-    return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-def ollama_vision(prompt, image_base64):
-    url = "http://localhost:11434/api/generate"
-    payload = {
-        "model": "llama3.2-vision",
-        "prompt": f"""{prompt}\n\nAnalyze this image and describe the SHAP values for the features in 
-        the context of Type-2 diabetes risk assessment. Please keep in mind that the explainations or summaries
-        are intended for clinicans, so keep a medical scientific background to the summary. Don't make the summary too technical 
-        and do not include the word SHAP - just make it intuitive for the clinician. """,
-        "images": image_base64,
-        "stream": False
-    }
-    st.write(f'LLM: {payload['model']}')
-    response = requests.post(url, json=payload)
-    return json.loads(response.text)["response"]
-
-# Encode the plot for LLM
 bar_base64 = plot_to_base64(fig_bar)
 waterfall_base64 = plot_to_base64(fig_waterfall)
+
+feature_names = X.columns.to_list()
+array_data = "\n".join([f"{name}: {value:.2f}" for name, value in zip(feature_names, np.array(shap_expl.values).mean(axis=0))])
 
 # Analyze button
 if st.button("🧠 Analyze with LLM"):
     with st.spinner("Analyzing..."):
-        summary = ollama_vision("Provide a short data summary:", [bar_base64])
+        # summary = llama_vision(bar_base64)
+        summary = llama_data(array_data)
+        # summary = huggingface_model(image=bar_base64)
     st.success("Analysis Complete!")
     
     st.write(summary)
