@@ -4,6 +4,12 @@ import plotly.express as px
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
+
+#Added theme colors for the bar charts.
+THEME_COLORS = {
+    "borderColor": "#4682b4",
+    "chartCategoricalColors": ["#4682b4", "#B22222"]
+}
 st.set_page_config(layout="wide")
 
 st.sidebar.markdown("# Descriptive Analytics")
@@ -39,7 +45,7 @@ with col1:
     fig = px.pie(
         names=labels,                 
         color=labels,
-        color_discrete_map={"No diabetes": "#1f77b4", "Diabetes": "#ff7f0e"},
+        color_discrete_map={"No diabetes": "#4682b4", "Diabetes": "#B22222"},
         hole=0.3,                     
         title="Proportion of Participants with and without Diabetes"
     )
@@ -76,7 +82,7 @@ with col2:
 
         # Plot
         fig, ax = plt.subplots(figsize=(9, 6))
-        plot_df.plot(kind="barh", stacked=True, ax=ax)
+        plot_df.plot(kind="barh", stacked=True, ax=ax, color=THEME_COLORS["chartCategoricalColors"][:2])
 
         ax.set_xlim(0, 100)
         ax.set_xlabel("Percent (%)")
