@@ -240,7 +240,7 @@ fig = px.box(
     x="Age",
     y="BMI",
     color="Diabetes_binary",
-    color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
+    color_discrete_map={0: "#4682b4", 1: "#B22222"},  # custom palette
     points="outliers",  # show outliers as individual points
     labels={
         "AgeGroup": "Age Group",
@@ -280,7 +280,7 @@ fig = px.box(
     x="Age",
     y="MentHlth",
     color="Diabetes_binary",
-    color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
+    color_discrete_map={0: "#4682b4", 1: "#B22222"},  # custom palette
     points="outliers",  # show outliers as individual points
     labels={
         "AgeGroup": "Age Group",
@@ -320,7 +320,7 @@ fig = px.box(
     x="Age",
     y="GenHlth",
     color="Diabetes_binary",
-    color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
+    color_discrete_map={0: "#4682b4", 1: "#B22222"},  # custom palette
     points="outliers",  # show outliers as individual points
     labels={
         "AgeGroup": "Age Group",
