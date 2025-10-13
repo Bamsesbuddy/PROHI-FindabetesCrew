@@ -7,9 +7,9 @@ from streamlit_extras.metric_cards import style_metric_cards
 
 st.set_page_config(layout="wide")
 
-st.markdown("# Patient prediction 🎯")
+st.markdown("# Patient prediction")
 
-st.sidebar.markdown("# Patient prediction 🎯")
+st.sidebar.markdown("# Patient prediction")
 st.sidebar.image("./assets/LogoFindabetes.png")
 
 st.write("# Example of model prediction")
@@ -109,7 +109,7 @@ if button_press_bool:
         # --- Style all metrics consistently ---
         style_metric_cards(
             background_color="#F8FAFC",     # light gray/white
-            border_left_color="#3B82F6",    # blue accent
+            border_left_color="#4682b4",    # blue accent
             border_color="#CBD5E1",
             box_shadow=True,
         )
