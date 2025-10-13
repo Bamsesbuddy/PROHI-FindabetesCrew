@@ -7,6 +7,6 @@ font="serif"
 baseRadius = "0.8rem"
 borderColor = "#4682b4"
 showWidgetBorder = true
-chartCategoricalColors = ["#4682b4", "#F0EEE6"]
+chartCategoricalColors = ["#4682b4", "#8B0000"]
 textColor = "#003366"
 
