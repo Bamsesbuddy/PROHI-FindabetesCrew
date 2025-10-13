@@ -74,39 +74,57 @@ with col2:
     if selected_features:
         plot_df = pd.DataFrame()
 
-        # Calculate percentage of diabetes vs no diabetes per selected feature
+        # --- Calculate percentage of diabetes vs no diabetes per selected feature ---
         for f in selected_features:
             counts = df[df[f] == 1][target].value_counts(normalize=True) * 100
             plot_df.loc[f, "No Diabetes"] = counts.get(0, 0)
             plot_df.loc[f, "Diabetes"] = counts.get(1, 0)
 
-        # Plot
-        fig, ax = plt.subplots(figsize=(9, 6))
-        plot_df.plot(kind="barh", stacked=True, ax=ax, color=THEME_COLORS["chartCategoricalColors"][:2])
+        # --- Create stacked horizontal bar chart ---
+        colors = THEME_COLORS["chartCategoricalColors"][:2]  # keep your color theme
+        fig = go.Figure()
 
-        ax.set_xlim(0, 100)
-        ax.set_xlabel("Percent (%)")
-        ax.set_title("Share of patients with and without diabetes (100% stacked)")
-        ax.legend(title="Diabetes", bbox_to_anchor=(1.05, 1), loc="upper left")
-        ax.grid(False)
-        plt.tight_layout()
+        for col, color in zip(plot_df.columns, colors):
+            fig.add_trace(go.Bar(
+                y=plot_df.index,
+                x=plot_df[col],
+                name=col,
+                orientation='h',
+                marker=dict(color=color),
+                text=[f"{v:.1f}%" if v > 3 else "" for v in plot_df[col]],
+                textposition='inside',
+                insidetextanchor='middle',
+                textfont=dict(color='white', size=11, family='Arial'),
+            ))
 
-        # --- Add annotations ---
-        for i, (idx, row) in enumerate(plot_df.iterrows()):
-            left = 0
-            for category in plot_df.columns:
-                value = row[category]
-                if value > 3:  # only annotate if the segment is large enough to fit text
-                    ax.text(
-                        left + value / 2,        # x position (middle of the bar segment)
-                        i,                       # y position
-                        f"{value:.1f}%",         # text label
-                        ha='center', va='center', color='white', fontsize=9, fontweight='bold'
-                    )
-                left += value  # move to next stacked segment
+        # --- Layout adjustments ---
+        fig.update_layout(
+            barmode='stack',
+            xaxis=dict(
+                range=[0, 100],
+                title="Percent (%)",
+                showgrid=False
+            ),
+            yaxis=dict(
+                title="",
+                categoryorder='total ascending'
+            ),
+            title=dict(
+                text="Share of patients with and without diabetes (100% stacked)",
+                x=0.5,
+                xanchor='center'
+            ),
+            legend=dict(
+                title="Diabetes",
+                x=1.02,
+                y=1,
+                bgcolor='rgba(0,0,0,0)'
+            ),
+            margin=dict(l=80, r=150, t=60, b=40),
+            plot_bgcolor='white'
+        )
 
-        st.pyplot(fig)
-
+        st.plotly_chart(fig, use_container_width=True)
     else:
         st.warning("Please select at least one feature to display.")
 
@@ -228,20 +246,22 @@ with col2:
 st.markdown("## Distribution of BMI values per age group grouped by diabetes in the dataset")
 st.markdown("How is the BMI distributed per age group related to our target class of diabetes")
 
-age_bins = [18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, float('inf')]
+age_bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, float('inf')]
 age_labels = ['18–24', '25–29', '30–34', '35–39', '40–44', '45–49',
             '50–54', '55–59', '60–64', '65–69', '70–74', '75–79', '80+']
+df["AgeGroup"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=True, ordered=True)
 
-# --- Create AgeGroup variable ---
-df["AgeGroup"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=False)
+
+### ------- BMI over Age Groups Boxplot -------
 
 fig = px.box(
     df,
-    x="Age",
+    x="AgeGroup",
     y="BMI",
     color="Diabetes_binary",
     color_discrete_map={0: "#4682b4", 1: "#B22222"},  # custom palette
     points="outliers",  # show outliers as individual points
+    category_orders={"AgeGroup": age_labels},  # <-- optional explicit order
     labels={
         "AgeGroup": "Age Group",
         "BMI": "BMI",
@@ -253,7 +273,7 @@ fig = px.box(
 # --- Customize layout ---
 fig.update_layout(
     boxmode="group",  # side-by-side boxes per age group
-    xaxis_title="Age",
+    xaxis_title="Age Group",
     yaxis_title="BMI",
     legend_title="Diabetes",
     legend=dict(
@@ -275,13 +295,17 @@ fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 st.plotly_chart(fig, use_container_width=True)
 
 
+
+### ------- Mental Health over Age Groups Boxplot -------
+
 fig = px.box(
     df,
-    x="Age",
+    x="AgeGroup",
     y="MentHlth",
     color="Diabetes_binary",
     color_discrete_map={0: "#4682b4", 1: "#B22222"},  # custom palette
     points="outliers",  # show outliers as individual points
+    category_orders={"AgeGroup": age_labels},  # <-- optional explicit order
     labels={
         "AgeGroup": "Age Group",
         "MentHlth": "Mental Health",
@@ -293,7 +317,7 @@ fig = px.box(
 # --- Customize layout ---
 fig.update_layout(
     boxmode="group",  # side-by-side boxes per age group
-    xaxis_title="Age",
+    xaxis_title="Age Group",
     yaxis_title="Mental Health",
     legend_title="Diabetes",
     legend=dict(
@@ -315,13 +339,17 @@ fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 st.plotly_chart(fig, use_container_width=True)
 
 
+
+### ------- General Health over Age Groups Boxplot -------
+
 fig = px.box(
     df,
-    x="Age",
+    x="AgeGroup",
     y="GenHlth",
     color="Diabetes_binary",
     color_discrete_map={0: "#4682b4", 1: "#B22222"},  # custom palette
     points="outliers",  # show outliers as individual points
+    category_orders={"AgeGroup": age_labels},  # <-- optional explicit order
     labels={
         "AgeGroup": "Age Group",
         "GenHlth": "General Health",
@@ -333,7 +361,7 @@ fig = px.box(
 # --- Customize layout ---
 fig.update_layout(
     boxmode="group",  # side-by-side boxes per age group
-    xaxis_title="Age",
+    xaxis_title="Age Group",
     yaxis_title="General Health",
     legend_title="Diabetes",
     legend=dict(
