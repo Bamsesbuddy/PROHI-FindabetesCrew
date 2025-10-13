@@ -7,7 +7,7 @@ st.sidebar.success("Select a tab above.")
 
 bool_map = {'Yes': 1, 'No': 0}
 gender_map = {'Male': 1, 'Female': 0}
-bp_map = {'High': 1, 'Low': 0}
+bp_map = {'High': 1, 'Normal': 0}
 
 st.write("# Questionnaire")
 st.write(" ### Fill out the form below. The answers will be sent to your physician for further assessment.")
@@ -106,22 +106,22 @@ if agree_terms:
         )
         Veggies = option
 
-        option = st.radio(
-            "Do you drink more than 14 alcoholic beverages (as a man) or 7 alcoholic beverages (as a woman) per week?",
-            ["No", "Yes"],
-            index=None,
-            key=3,
-        )
-        HeavyAlcConsumption = option
-
-        options = ["1 = Excellent", "2 = Very good", "3 = Good", "4 = Fair","5 = Poor"]
+        options = ["Excellent", "Very good", "Good", "Fair","Poor"]
         selection = st.pills(
             "Would you say that in general your health is on a scale 1-5?", 
             options)
         
         if selection:
-            # Extract the number before the '='
-            GenHlth = int(selection.split('=')[0].strip())
+            if selection == 'Excellent':
+                GenHlth = 1
+            elif selection == 'Very good':
+                GenHlth = 2
+            elif selection == 'Good':
+                GenHlth = 3
+            elif selection == 'Fair':
+                GenHlth = 4
+            elif selection == 'Poor':
+                GenHlth = 5    
 
         ##  A slider may not be the best option, but we'll go with that for now. 
         option = st.select_slider(
@@ -152,7 +152,6 @@ if agree_terms:
                 "Physical Activity": [bool_map[PhysAct]],
                 "Fruits": [bool_map[Fruits]],
                 "Veggies": [bool_map[Veggies]],
-                "Heavy Alcohol Consumption": [bool_map[HeavyAlcConsumption]],
                 "General Health": [GenHlth],
                 "Mental Health": [MenHlth],
                 "Difficulties Walking": [bool_map[DiffWalk]],
