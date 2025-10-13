@@ -27,10 +27,13 @@ with st.form("my_form"):
     gender = option
 
     #Should be decided on an acceptable interval!
-    number = st.number_input(
-        "Enter your age", value=None,
+    age = st.number_input(
+        "Enter your age",
+        min_value=18,
+        max_value=120,
+        step=1,
+        format="%d",      # ensures whole numbers are displayed
     )
-    age = number
     
     option = st.radio(
         "Select the level of your blood pressure",
@@ -41,8 +44,12 @@ with st.form("my_form"):
     highbp = option
 
 ## Insert BMI calculator here!
-    weight = st.number_input("Weight (kg)")
-    height = st.number_input("Height (cm):")
+    weight = st.number_input("Weight (kg)",
+                            step=1,
+                            format="%d")
+    height = st.number_input("Height (cm):",         
+                            step=1,
+                            format="%d")
     def calculate_BMI(weight, height):
         height_meter = height / 100
         return weight / (height_meter ** 2) 
