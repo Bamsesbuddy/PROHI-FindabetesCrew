@@ -11,7 +11,7 @@ st.sidebar.success("Select a tab above.")
 
 # # Page information
 
-st.write("# Findabetes CDS Tool")
+st.write("# Findabetes Decision Support Tool")
 
 st.markdown(
 """
