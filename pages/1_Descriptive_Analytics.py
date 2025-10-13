@@ -9,7 +9,7 @@ st.set_page_config(layout="wide")
 st.sidebar.markdown("# Descriptive Analytics")
 st.sidebar.image("./assets/LogoFindabetes.png",)
 
-st.markdown("# Descriptive Analytics 📊")
+st.markdown("# Descriptive Analytics")
 
 st.markdown("## Statistical analytics performed on the data set")
 st.markdown("In this section you will gather more information about the statistical analysis performed on the data set.")
@@ -61,7 +61,7 @@ with col2:
     selected_features = st.multiselect(
         label="Choose the features for display:",
         options=features,
-        default=None
+        default=['Smoker', 'Stroke', 'HighBP']
     )
 
     # Only proceed if at least one feature is selected
@@ -105,34 +105,34 @@ with col2:
         st.warning("Please select at least one feature to display.")
 
 
-    # Q2  What is the distribution of diabetes vs. no diabetes in lifestyle-related features?
-    st.markdown("More interestingly we looked specifically at the distribution of diabetes related to different lifestyle features.")
+    # # Q2  What is the distribution of diabetes vs. no diabetes in lifestyle-related features?
+    # st.markdown("More interestingly we looked specifically at the distribution of diabetes related to different lifestyle features.")
 
-    Lifestyle_features = [
-        "HighBP", "Smoker", "PhysActivity",
-        "Fruits", "Veggies", "HvyAlcoholConsump",
-    ]
+    # Lifestyle_features = [
+    #     "HighBP", "Smoker", "PhysActivity",
+    #     "Fruits", "Veggies", "HvyAlcoholConsump",
+    # ]
 
-    chosen_lifestyle_features = st.multiselect(
-        options=Lifestyle_features, 
-        label="Select the lifestyle feature to see distribution", 
-        default=None)
+    # chosen_lifestyle_features = st.multiselect(
+    #     options=Lifestyle_features, 
+    #     label="Select the lifestyle feature to see distribution", 
+    #     default=None)
 
-    if chosen_lifestyle_features:
-        # Create a crosstab to see the relationship between the chosen feature and Diabetes_binary
-        crosstab = pd.crosstab((chosen_lifestyle_features), df["Diabetes_binary"])
+    # if chosen_lifestyle_features:
+    #     # Create a crosstab to see the relationship between the chosen feature and Diabetes_binary
+    #     crosstab = pd.crosstab((chosen_lifestyle_features), df["Diabetes_binary"])
 
-        # Plot the crosstab
-        crosstab.plot(kind="bar", stacked=True)
+    #     # Plot the crosstab
+    #     crosstab.plot(kind="bar", stacked=True)
 
-        plt.title("Proportion of Diabetes cases by lifestyle-related feature of your choice")
-        plt.xlabel("Lifestyle feature")
-        plt.ylabel("Count")
-        plt.legend(title="Diabetes")
-        plt.grid(False)
-        st.pyplot(plt)
-    else: 
-        st.warning("Please select at least one feature to display.")
+    #     plt.title("Proportion of Diabetes cases by lifestyle-related feature of your choice")
+    #     plt.xlabel("Lifestyle feature")
+    #     plt.ylabel("Count")
+    #     plt.legend(title="Diabetes")
+    #     plt.grid(False)
+    #     st.pyplot(plt)
+    # else: 
+    #     st.warning("Please select at least one feature to display.")
 
 
 col1, col2 = st.columns(2)
@@ -222,131 +222,128 @@ with col2:
 st.markdown("## Distribution of BMI values per age group grouped by diabetes in the dataset")
 st.markdown("How is the BMI distributed per age group related to our target class of diabetes")
 
-col1, col2, col3 = st.columns(3)
+age_bins = [18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, float('inf')]
+age_labels = ['18–24', '25–29', '30–34', '35–39', '40–44', '45–49',
+            '50–54', '55–59', '60–64', '65–69', '70–74', '75–79', '80+']
 
-with col1:
-    age_bins = [18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, float('inf')]
-    age_labels = ['18–24', '25–29', '30–34', '35–39', '40–44', '45–49',
-                '50–54', '55–59', '60–64', '65–69', '70–74', '75–79', '80+']
+# --- Create AgeGroup variable ---
+df["AgeGroup"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=False)
 
-    # --- Create AgeGroup variable ---
-    df["AgeGroup"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=False)
+fig = px.box(
+    df,
+    x="Age",
+    y="BMI",
+    color="Diabetes_binary",
+    color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
+    points="outliers",  # show outliers as individual points
+    labels={
+        "AgeGroup": "Age Group",
+        "BMI": "BMI",
+        "Diabetes": "Diabetes Status"
+    },
+    title="BMI Distribution by Age Group and Diabetes Status",
+)
 
-    fig = px.box(
-        df,
-        x="Age",
-        y="BMI",
-        color="Diabetes_binary",
-        color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
-        points="outliers",  # show outliers as individual points
-        labels={
-            "AgeGroup": "Age Group",
-            "BMI": "BMI",
-            "Diabetes": "Diabetes Status"
-        },
-        title="BMI Distribution by Age Group and Diabetes Status",
-    )
+# --- Customize layout ---
+fig.update_layout(
+    boxmode="group",  # side-by-side boxes per age group
+    xaxis_title="Age",
+    yaxis_title="BMI",
+    legend_title="Diabetes",
+    legend=dict(
+        x=1.02,
+        y=1,
+        bgcolor='rgba(0,0,0,0)',
+        bordercolor='rgba(0,0,0,0)'
+    ),
+    title_font=dict(size=16, family="Arial", color="black"),
+    plot_bgcolor="white",
+    paper_bgcolor="white",
+)
 
-    # --- Customize layout ---
-    fig.update_layout(
-        boxmode="group",  # side-by-side boxes per age group
-        xaxis_title="Age",
-        yaxis_title="BMI",
-        legend_title="Diabetes",
-        legend=dict(
-            x=1.02,
-            y=1,
-            bgcolor='rgba(0,0,0,0)',
-            bordercolor='rgba(0,0,0,0)'
-        ),
-        title_font=dict(size=16, family="Arial", color="black"),
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-    )
+# --- Optional: tidy gridlines ---
+fig.update_xaxes(showgrid=False)
+fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 
-    # --- Optional: tidy gridlines ---
-    fig.update_xaxes(showgrid=False)
-    fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
+# --- Display in Streamlit ---
+st.plotly_chart(fig, use_container_width=True)
 
-    # --- Display in Streamlit ---
-    st.plotly_chart(fig, use_container_width=True)
 
-with col2:
-    fig = px.box(
-        df,
-        x="Age",
-        y="MentHlth",
-        color="Diabetes_binary",
-        color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
-        points="outliers",  # show outliers as individual points
-        labels={
-            "AgeGroup": "Age Group",
-            "MentHlth": "Mental Health",
-            "Diabetes": "Diabetes Status"
-        },
-        title="Mental Health Distribution by Age Group and Diabetes Status",
-    )
+fig = px.box(
+    df,
+    x="Age",
+    y="MentHlth",
+    color="Diabetes_binary",
+    color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
+    points="outliers",  # show outliers as individual points
+    labels={
+        "AgeGroup": "Age Group",
+        "MentHlth": "Mental Health",
+        "Diabetes": "Diabetes Status"
+    },
+    title="Mental Health Distribution by Age Group and Diabetes Status",
+)
 
-    # --- Customize layout ---
-    fig.update_layout(
-        boxmode="group",  # side-by-side boxes per age group
-        xaxis_title="Age",
-        yaxis_title="Mental Health",
-        legend_title="Diabetes",
-        legend=dict(
-            x=1.02,
-            y=1,
-            bgcolor='rgba(0,0,0,0)',
-            bordercolor='rgba(0,0,0,0)'
-        ),
-        title_font=dict(size=16, family="Arial", color="black"),
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-    )
+# --- Customize layout ---
+fig.update_layout(
+    boxmode="group",  # side-by-side boxes per age group
+    xaxis_title="Age",
+    yaxis_title="Mental Health",
+    legend_title="Diabetes",
+    legend=dict(
+        x=1.02,
+        y=1,
+        bgcolor='rgba(0,0,0,0)',
+        bordercolor='rgba(0,0,0,0)'
+    ),
+    title_font=dict(size=16, family="Arial", color="black"),
+    plot_bgcolor="white",
+    paper_bgcolor="white",
+)
 
-    # --- Optional: tidy gridlines ---
-    fig.update_xaxes(showgrid=False)
-    fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
+# --- Optional: tidy gridlines ---
+fig.update_xaxes(showgrid=False)
+fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 
-    # --- Display in Streamlit ---
-    st.plotly_chart(fig, use_container_width=True)
+# --- Display in Streamlit ---
+st.plotly_chart(fig, use_container_width=True)
 
-with col3:
-    fig = px.box(
-        df,
-        x="Age",
-        y="GenHlth",
-        color="Diabetes_binary",
-        color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
-        points="outliers",  # show outliers as individual points
-        labels={
-            "AgeGroup": "Age Group",
-            "GenHlth": "General Health",
-            "Diabetes": "Diabetes Status"
-        },
-        title="General Health Distribution by Age Group and Diabetes Status",
-    )
 
-    # --- Customize layout ---
-    fig.update_layout(
-        boxmode="group",  # side-by-side boxes per age group
-        xaxis_title="Age",
-        yaxis_title="General Health",
-        legend_title="Diabetes",
-        legend=dict(
-            x=1.02,
-            y=1,
-            bgcolor='rgba(0,0,0,0)',
-            bordercolor='rgba(0,0,0,0)'
-        ),
-        title_font=dict(size=16, family="Arial", color="black"),
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-    )
+fig = px.box(
+    df,
+    x="Age",
+    y="GenHlth",
+    color="Diabetes_binary",
+    color_discrete_map={0: "#66c2a5", 1: "#fc8d62"},  # custom palette
+    points="outliers",  # show outliers as individual points
+    labels={
+        "AgeGroup": "Age Group",
+        "GenHlth": "General Health",
+        "Diabetes": "Diabetes Status"
+    },
+    title="General Health Distribution by Age Group and Diabetes Status",
+)
 
-    # --- Optional: tidy gridlines ---
-    fig.update_xaxes(showgrid=False)
-    fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
+# --- Customize layout ---
+fig.update_layout(
+    boxmode="group",  # side-by-side boxes per age group
+    xaxis_title="Age",
+    yaxis_title="General Health",
+    legend_title="Diabetes",
+    legend=dict(
+        x=1.02,
+        y=1,
+        bgcolor='rgba(0,0,0,0)',
+        bordercolor='rgba(0,0,0,0)'
+    ),
+    title_font=dict(size=16, family="Arial", color="black"),
+    plot_bgcolor="white",
+    paper_bgcolor="white",
+)
 
-    # --- Display in Streamlit ---
-    st.plotly_chart(fig, use_container_width=True)
+# --- Optional: tidy gridlines ---
+fig.update_xaxes(showgrid=False)
+fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
+
+# --- Display in Streamlit ---
+st.plotly_chart(fig, use_container_width=True)
