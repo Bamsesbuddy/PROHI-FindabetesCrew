@@ -8,7 +8,7 @@ import base64
 from huggingface_hub import InferenceClient
 import streamlit as st
 
-def make_donut(input_response, input_text, input_color):
+def make_donut(input_response, input_text, input_color, size=180):
     if input_color == 'blue':
         chart_color = ['#29b5e8', '#155F7A']
     if input_color == 'green':
@@ -20,15 +20,15 @@ def make_donut(input_response, input_text, input_color):
 
     source = pd.DataFrame({
         "Topic": ['', input_text],
-        "% value": [100-input_response, input_response]
+        "Value": [100-input_response, input_response]
     })
     source_bg = pd.DataFrame({
         "Topic": ['', input_text],
-        "% value": [100, 0]
+        "Value": [100, 0]
     })
 
-    plot = alt.Chart(source).mark_arc(innerRadius=45, cornerRadius=25).encode(
-        theta="% value",
+    plot = alt.Chart(source).mark_arc(innerRadius=45, cornerRadius=0).encode(
+        theta="Value",
         color= alt.Color("Topic:N",
                         scale=alt.Scale(
                             #domain=['A', 'B'],
@@ -36,18 +36,18 @@ def make_donut(input_response, input_text, input_color):
                             # range=['#29b5e8', '#155F7A']),  # 31333F
                             range=chart_color),
                         legend=None),
-    ).properties(width=130, height=130)
+    ).properties(width=size, height=size)
 
-    text = plot.mark_text(align='center', color="#29b5e8", font="Lato", fontSize=32, fontWeight=700, fontStyle="italic").encode(text=alt.value(f'{input_response} %'))
+    text = plot.mark_text(align='center', color="#29b5e8", font="Calibri", fontSize=32, fontWeight=700, fontStyle="italic").encode(text=alt.value(f'{input_response} %'))
     plot_bg = alt.Chart(source_bg).mark_arc(innerRadius=45, cornerRadius=20).encode(
-        theta="% value",
+        theta="Value",
         color= alt.Color("Topic:N",
                         scale=alt.Scale(
                             # domain=['A', 'B'],
                             domain=[input_text, ''],
                             range=chart_color),  # 31333F
                         legend=None),
-    ).properties(width=130, height=130)
+    ).properties(width=size, height=size)
     return plot_bg + plot + text
 
 
@@ -93,19 +93,30 @@ def llama_vision(image):
     response = requests.post(url, json=payload)
     return json.loads(response.text)["response"]
 
-def llama_data(data):
+def llama_data(data, pred):
     url = "http://localhost:11434/api/generate"
     payload = {
         "model": "llama3.2",  # text-only model is fine here
         "prompt": f"""
-        You are a medical AI assistant analyzing SHAP feature importance values (possibly larger than 1 or negative as well) 
-        for a patient.
+        You are a clinical decision support assistant specialized in endocrinology and metabolic disorders.
 
-        Here are the feature SHAP values for predicting Type-2 diabetes risk: {data}
+        You are given SHAP feature importance values for a predictive model estimating a patient's **risk of Type 2 Diabetes**. 
+        Each feature’s SHAP value represents how much it increases or decreases the model’s predicted risk. 
+        Positive SHAP values indicate stronger contribution *toward higher diabetes risk*, while negative values indicate *protective effects*.
 
-        Please:
-        1. Identify which features contribute most to increased or decreased risk.
-        2. Provide a short 3–5 sentence clinical interpretation of these results.
+        Here are the feature SHAP values for this patient:
+        {data}
+
+        Here is the predicted risk of Type-2 diabetes for the specific patient in %:
+        {pred}
+
+        Please provide a short, clinician-oriented interpretation by doing the following:
+        1. Summarize the **top 3–5 most influential features**, noting whether each increases or decreases diabetes risk.  
+        2. Explain these findings in **clinical terms**, relating them to pathophysiology or risk factors (e.g., obesity, hypertension, physical inactivity, diet, metabolic syndrome).  
+        3. Conclude with a **concise 3–5 sentence summary** that contextualizes the risk profile and potential next clinical considerations or recommendations (e.g., lifestyle modification, screening follow-up, further lab testing).
+
+        The output should be clear, evidence-informed, and phrased for **healthcare professionals** (not patients).  
+        Avoid generic statements — tie your reasoning directly to the SHAP feature effects above.
         """,
         "stream": False,
         #  "options": {"num_predict": 200, "temperature": 0.2}
