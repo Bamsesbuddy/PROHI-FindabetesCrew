@@ -1,5 +1,12 @@
 [theme]
 base="light"
-primaryColor="#4682b4"
-secondaryBackgroundColor="#f0f8ff"
+primaryColor = "#4682b4"
+backgroundColor = "#FFFAF0"
+secondaryBackgroundColor="#F0EEE6"
 font="serif"
+baseRadius = "0.8rem"
+borderColor = "#4682b4"
+showWidgetBorder = true
+chartCategoricalColors = ["#4682b4", "#8B0000"]
+textColor = "#003366"
+
