@@ -20,11 +20,9 @@ with col1:
             """
             ### 🩺 Type-2 Diabetes Risk Assessment
 
-            Type-2 Diabetes often develops slowly — many people don’t notice symptoms until complications arise.  
-            Early awareness is key to prevention and better long-term health.
+            Type-2 Diabetes often develops slowly — many people don’t notice symptoms until complications arise. Early awareness is key to prevention and better long-term health.
 
-            This short questionnaire helps your doctor understand your personal risk of developing Type-2 Diabetes  
-            based on lifestyle, medical history, and health factors.
+            This short questionnaire helps your doctor understand your personal risk of developing Type-2 Diabetes based on lifestyle, medical history, and health factors.
 
             By identifying your risk early, you can take meaningful steps such as:
 

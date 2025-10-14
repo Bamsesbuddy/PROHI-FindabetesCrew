@@ -11,7 +11,7 @@ bp_map = {'High': 1, 'Normal': 0}
 
 st.write("# Questionnaire")
 st.write(" ### Fill out the form below. The answers will be sent to your physician for further assessment.")
-st.write("By proceeding, you consent to your responses being collected and used for medical purposes in accordance with Findabetes' data handling and privacy policy. Please read more at XXX.")
+st.write("By proceeding, you consent to your responses being collected and used for medical purposes in accordance with Findabetes' data handling and privacy policy.")
 agree_terms = st.checkbox("I agree to the terms.")
 
 st.divider()
