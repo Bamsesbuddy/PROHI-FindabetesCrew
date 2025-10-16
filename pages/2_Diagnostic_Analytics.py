@@ -217,6 +217,8 @@ with st.container(border=True):
 
 st.divider()
 
+st.subheader("Self-reported Physical and Mental Health")
+
 # --- Data prep (same as your code) ---
 df_plot = df[['Age','PhysHlth','MentHlth','Diabetes_binary']].copy()
 df_plot['PhysHlth'] = -df_plot['PhysHlth']   # Invert values as higher = better
@@ -238,63 +240,97 @@ df_plot['age_group'] = pd.Categorical(df_plot['age_group'], categories=order, or
 mean_phys = df_plot.groupby(['age_group', 'Diabetes'])['PhysHlth'].mean().reset_index()
 mean_ment = df_plot.groupby(['age_group', 'Diabetes'])['MentHlth'].mean().reset_index()
 
-# --- Create 1x2 subplot figure ---
-fig = make_subplots(rows=1, cols=2, shared_yaxes=True,
-                    subplot_titles=("Physical health by age group", "Mental health by age group"))
-
 colors = {'Diabetes': '#d62728', 'No diabetes': '#1f77b4'}
 
-# --- Left subplot: Physical Health ---
-for diabetes_status in ['No diabetes', 'Diabetes']:
-    subset = mean_phys[mean_phys['Diabetes'] == diabetes_status]
-    fig.add_trace(
-        go.Scatter(
-            x=subset['age_group'],
-            y=subset['PhysHlth'],
-            mode='lines+markers',
-            name=diabetes_status,
-            line=dict(color=colors[diabetes_status]),
-            marker=dict(size=6)
+col1, col2 = st.columns(2)
+with col1:
+    fig = go.Figure()
+    # --- Left subplot: Physical Health ---
+    for diabetes_status in ['No diabetes', 'Diabetes']:
+        subset = mean_phys[mean_phys['Diabetes'] == diabetes_status]
+        fig.add_trace(
+            go.Scatter(
+                x=subset['age_group'],
+                y=subset['PhysHlth'],
+                mode='lines+markers',
+                name=diabetes_status,
+                line=dict(color=colors[diabetes_status]),
+                marker=dict(size=6)
+            ),
+        )
+    # --- Layout styling ---
+    fig.update_layout(
+        title_text='',
+        title_x=0.5,
+        width=950,
+        height=550,
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        template="plotly_white",
+        legend_title_text='Diabetes',
+        font=dict(color='black', size=14),
+        margin=dict(l=40, r=20, t=60, b=40),
+        xaxis=dict(
+            title=dict(
+                text="Age Group",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=12)
         ),
-        row=1, col=1
+        yaxis=dict(
+            title=dict(
+                text="Past days",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=12)
+        ),
     )
 
-# --- Right subplot: Mental Health ---
-for diabetes_status in ['No diabetes', 'Diabetes']:
-    subset = mean_ment[mean_ment['Diabetes'] == diabetes_status]
-    fig.add_trace(
-        go.Scatter(
-            x=subset['age_group'],
-            y=subset['MentHlth'],
-            mode='lines+markers',
-            name=diabetes_status,
-            line=dict(color=colors[diabetes_status]),
-            marker=dict(size=6),
-            showlegend=(diabetes_status == 'Diabetes')  # legend on right subplot only
+    # --- Show figure (for Streamlit) ---
+    st.plotly_chart(fig, use_container_width=True)
+
+with col2:
+    fig = go.Figure()
+    # --- Right subplot: Mental Health ---
+    for diabetes_status in ['No diabetes', 'Diabetes']:
+        subset = mean_ment[mean_ment['Diabetes'] == diabetes_status]
+        fig.add_trace(
+            go.Scatter(
+                x=subset['age_group'],
+                y=subset['MentHlth'],
+                mode='lines+markers',
+                name=diabetes_status,
+                line=dict(color=colors[diabetes_status]),
+                marker=dict(size=6),
+            ),
+        )
+
+    # --- Layout styling ---
+    fig.update_layout(
+        title_text='',
+        title_x=0.5,
+        width=1050,
+        height=550,
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        legend_title_text='Diabetes',
+        font=dict(color='black', size=14),
+        margin=dict(l=40, r=20, t=60, b=40),
+        xaxis=dict(
+            title=dict(
+                text="Age Group",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=12)
         ),
-        row=1, col=2
+        yaxis=dict(
+            title=dict(
+                text="Past days",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=12)
+        ),
     )
 
-# --- Layout styling ---
-fig.update_layout(
-    title_text='Physical & Mental Health by Age and Diabetes Status',
-    title_x=0.5,
-    width=950,
-    height=450,
-    plot_bgcolor='white',
-    legend_title_text='Diabetes',
-    font=dict(color='black', size=14)
-)
-
-# --- Axis formatting ---
-# fig.update_xaxes(title_text='Age Group', tickfont=dict(color='black', size=12),
-#                  titlefont=dict(color='black', size=14), row=1, col=1)
-# fig.update_xaxes(title_text='Age Group', tickfont=dict(color='black', size=12),
-#                  titlefont=dict(color='black', size=14), row=1, col=2)
-
-# fig.update_yaxes(title_text='Average (higher = better)', tickfont=dict(color='black', size=12),
-#                  titlefont=dict(color='black', size=14), row=1, col=1)
-# fig.update_yaxes(tickfont=dict(color='black', size=12), row=1, col=2)
-
-# --- Show figure (for Streamlit) ---
-st.plotly_chart(fig, use_container_width=True)
+    # --- Show figure (for Streamlit) ---
+    st.plotly_chart(fig, use_container_width=True)
