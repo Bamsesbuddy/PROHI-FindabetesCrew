@@ -7,12 +7,25 @@ from streamlit_extras.metric_cards import style_metric_cards
 
 st.set_page_config(layout="wide")
 
-st.markdown("# Patient prediction")
+st.markdown("# Predictive Analytics")
 
-st.sidebar.markdown("# Patient prediction")
 st.sidebar.image("./assets/LogoFindabetes.png")
 
-st.write("# Example of model prediction")
+button_press = False
+
+st.markdown("""
+    This page provides a predictive analytics interface designed to support clinical 
+    decision-making in the assessment of Type-2 Diabetes risk. The underlying 
+    machine learning model evaluates patient-specific features — including demographic and
+    lifestyle factors — to generate an individualized risk estimation.
+
+    By integrating data-driven insights with traditional clinical parameters, the tool 
+    enables early identification of patients at elevated risk for Type-2 diabetes, 
+    facilitating timely preventive interventions and personalized management strategies.
+            
+    **By pressing the button below the prediction is started and the patient's parameters 
+    along with the risk probability are shown**.
+""")
 
 def get_age_group_mapping(age):
     if age < 18: return None
@@ -29,7 +42,6 @@ def get_age_group_mapping(age):
     elif age <= 74: return 11
     elif age <= 79: return 12
     else: return 13
-
 
 # Load model
 pre_trained_model_path = "./jupyter-notebooks/hgb_classifier_V2.pkl"
@@ -52,13 +64,21 @@ if button_press_bool:
         elif int(prediction[1] * 100) > 30: 
             st.image("./assets/FindabetesModeraterisk.png", width=400)
         else:
-            st.image("./assets/FindabetesLowrisk.png", width=400)
+            st.image("./assets/image.png", width=400)
     with right_column:
         with st.container(border=True):
             # Donut chart for diabetes risk
-            donut_class_one = make_donut(int(prediction[1] * 100), 'Risk of Type-2 Diabetes', 'red')
+            if int(prediction[1] * 100) > 50:
+                donut_class_one = make_donut(int(prediction[1] * 100), 'Risk of Type-2 Diabetes', 'red')
+                st.altair_chart(donut_class_one, use_container_width=True)
+            elif int(prediction[1] * 100) > 30:
+                donut_class_one = make_donut(int(prediction[1] * 100), 'Risk of Type-2 Diabetes', 'orange')
+                st.altair_chart(donut_class_one, use_container_width=True)
+            else:
+                donut_class_one = make_donut(int(prediction[1] * 100), 'Risk of Type-2 Diabetes', 'green')
+                st.altair_chart(donut_class_one, use_container_width=True)
             st.markdown("<h2 style='text-align: center;'>Risk of Type-2 Diabetes</h2>", unsafe_allow_html=True)
-            st.altair_chart(donut_class_one, use_container_width=True)
+                
 
     # --- Mappings ---
     bool_map = {0: "No", 1: "Yes"}
@@ -96,9 +116,20 @@ if button_press_bool:
         # --- Row 2: Health Scores ---
         row2_col1, row2_col2 = st.columns(2)
 
+        if user[8] == 1:
+            tmp = 'Excellent'
+        elif user[8] == 2:
+            tmp = 'Very good'
+        elif user[8] == 3:
+            tmp = 'Good'
+        elif user[8] == 4:
+            tmp = 'Fair'
+        elif user[8] == 5:
+            tmp = 'Poor' 
+
         with row2_col1:
             st.subheader("🧠 Mental & Physical")
-            st.metric("General Health", user[8])
+            st.metric("General Health", tmp)
             st.metric("Mental Health", user[9])
 
         with row2_col2:
@@ -114,8 +145,11 @@ if button_press_bool:
             box_shadow=True,
         )
 
-## Button that redirects us to Prescriptive Analytics, page 4
-if st.button("See detailed view"): 
+    ## Button that redirects us to Prescriptive Analytics, page 4
+    button_press = st.button("See detailed view")
+        
+if button_press:
+    button_press_bool = False
     st.switch_page("pages/4_Prescriptive_Analytics.py")
 
 
