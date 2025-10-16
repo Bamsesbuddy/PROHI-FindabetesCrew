@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import matplotlib.pyplot as plt
 
 
 #Added theme colors for the bar charts.
@@ -13,7 +12,7 @@ THEME_COLORS = {
 st.set_page_config(layout="wide")
 
 st.sidebar.markdown("# Descriptive Analytics")
-st.sidebar.image("./assets/LogoFindabetes.png",)
+st.sidebar.image("./assets/LogoFindabetes.png")
 
 st.markdown("# Descriptive Analytics")
 
@@ -34,7 +33,7 @@ features = [
     "Sex", "DiffWalk"
 ]
 
-col1, col2 = st.columns(2)
+col1, col2 = st.columns([0.7, 1.3])
 
 with col1:
     # ---- Q5: Displaying prevalence of diabetes yes/no -----
@@ -42,6 +41,7 @@ with col1:
     st.markdown("It is also interesting to see how our target class of diabetes distribution within the data set. It is clear that there is a class imbalance, which will be accounted for when training the model.")
     labels = df["Diabetes_binary"].map({0: "No diabetes", 1: "Diabetes"})
 
+    fig = go.Figure()
     fig = px.pie(
         names=labels,                 
         color=labels,
@@ -60,8 +60,8 @@ with col1:
 
 with col2:
     #Q1: Stacked horizontal diabetes yes/no
-    st.markdown("## Diabetes prevalence in every feature")
-    st.markdown("We found it useful to understand the percentage of people with diabetes and how they reported the features mentioned. This selectbox allows you to view each feature and the prevalence of diabetes in these features.")
+    st.markdown("## Diabetes prevalence in every binary feature")
+    st.markdown("We found it useful to understand the percentage of people with diabetes and how they reported the features mentioned. This selectbox allows you to view each binary feature and the prevalence of diabetes in these features.")
 
     # Let user select which features to display
     selected_features = st.multiselect(
@@ -102,11 +102,19 @@ with col2:
             barmode='stack',
             xaxis=dict(
                 range=[0, 100],
-                title="Percent (%)",
-                showgrid=False
+                title=dict(
+                    text="Percent (%)",
+                    font=dict(color="black", size=16)
+                ),
+                tickfont=dict(color="black", size=12),
+                showgrid=False,
             ),
             yaxis=dict(
-                title="",
+                title=dict(
+                    text="",
+                    font=dict(color="black", size=16)
+                ),
+                tickfont=dict(color="black", size=12),
                 categoryorder='total ascending'
             ),
             title=dict(
@@ -121,7 +129,7 @@ with col2:
                 bgcolor='rgba(0,0,0,0)'
             ),
             margin=dict(l=80, r=150, t=60, b=40),
-            plot_bgcolor='white'
+            plot_bgcolor='white',
         )
 
         st.plotly_chart(fig, use_container_width=True)
@@ -183,14 +191,26 @@ with col1:
     )
     fig.update_layout(
         title="Diabetes Prevalence by Age Group",
-        xaxis_title="Age Group",
-        yaxis_title="Prevalence (%)",
         template="plotly_white",
         plot_bgcolor="white",
         paper_bgcolor="white",
         hovermode="x unified",
         margin=dict(l=40, r=20, t=60, b=40),
         title_font=dict(size=18),
+        xaxis=dict(
+            title=dict(
+                text="Age Group",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=12)
+        ),
+        yaxis=dict(
+            title=dict(
+                text="Prevalence (%)",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=12)
+        ),
     )
     fig.update_xaxes(showgrid=True, gridcolor="lightgrey", zeroline=False)
     fig.update_yaxes(showgrid=True, gridcolor="lightgrey", zeroline=False)
@@ -235,6 +255,20 @@ with col2:
         hovermode="x unified",
         margin=dict(l=40, r=20, t=60, b=40),
         title_font=dict(size=18),
+        xaxis=dict(
+            title=dict(
+                text="BMI",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=12)
+        ),
+        yaxis=dict(
+            title=dict(
+                text="Prevalence (%)",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=12)
+        ),
     )
     fig.update_xaxes(showgrid=True, gridcolor="lightgrey", zeroline=False)
     fig.update_yaxes(showgrid=True, gridcolor="lightgrey", zeroline=False)
@@ -285,94 +319,20 @@ fig.update_layout(
     title_font=dict(size=16, family="Arial", color="black"),
     plot_bgcolor="white",
     paper_bgcolor="white",
-)
-
-# --- Optional: tidy gridlines ---
-fig.update_xaxes(showgrid=False)
-fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
-
-# --- Display in Streamlit ---
-st.plotly_chart(fig, use_container_width=True)
-
-
-
-### ------- Mental Health over Age Groups Boxplot -------
-
-fig = px.box(
-    df,
-    x="AgeGroup",
-    y="MentHlth",
-    color="Diabetes_binary",
-    color_discrete_map={0: "#4682b4", 1: "#B22222"},  # custom palette
-    points="outliers",  # show outliers as individual points
-    category_orders={"AgeGroup": age_labels},  # <-- optional explicit order
-    labels={
-        "AgeGroup": "Age Group",
-        "MentHlth": "Mental Health",
-        "Diabetes": "Diabetes Status"
-    },
-    title="Mental Health Distribution by Age Group and Diabetes Status",
-)
-
-# --- Customize layout ---
-fig.update_layout(
-    boxmode="group",  # side-by-side boxes per age group
-    xaxis_title="Age Group",
-    yaxis_title="Mental Health",
-    legend_title="Diabetes",
-    legend=dict(
-        x=1.02,
-        y=1,
-        bgcolor='rgba(0,0,0,0)',
-        bordercolor='rgba(0,0,0,0)'
+    xaxis=dict(
+        title=dict(
+            text="Age Group",
+            font=dict(color="black", size=16)
+        ),
+        tickfont=dict(color="black", size=12)
+        ),
+    yaxis=dict(
+        title=dict(
+            text="BMI",
+            font=dict(color="black", size=16)
+        ),
+        tickfont=dict(color="black", size=12)
     ),
-    title_font=dict(size=16, family="Arial", color="black"),
-    plot_bgcolor="white",
-    paper_bgcolor="white",
-)
-
-# --- Optional: tidy gridlines ---
-fig.update_xaxes(showgrid=False)
-fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
-
-# --- Display in Streamlit ---
-st.plotly_chart(fig, use_container_width=True)
-
-
-
-### ------- General Health over Age Groups Boxplot -------
-
-fig = px.box(
-    df,
-    x="AgeGroup",
-    y="GenHlth",
-    color="Diabetes_binary",
-    color_discrete_map={0: "#4682b4", 1: "#B22222"},  # custom palette
-    points="outliers",  # show outliers as individual points
-    category_orders={"AgeGroup": age_labels},  # <-- optional explicit order
-    labels={
-        "AgeGroup": "Age Group",
-        "GenHlth": "General Health",
-        "Diabetes": "Diabetes Status"
-    },
-    title="General Health Distribution by Age Group and Diabetes Status",
-)
-
-# --- Customize layout ---
-fig.update_layout(
-    boxmode="group",  # side-by-side boxes per age group
-    xaxis_title="Age Group",
-    yaxis_title="General Health",
-    legend_title="Diabetes",
-    legend=dict(
-        x=1.02,
-        y=1,
-        bgcolor='rgba(0,0,0,0)',
-        bordercolor='rgba(0,0,0,0)'
-    ),
-    title_font=dict(size=16, family="Arial", color="black"),
-    plot_bgcolor="white",
-    paper_bgcolor="white",
 )
 
 # --- Optional: tidy gridlines ---
