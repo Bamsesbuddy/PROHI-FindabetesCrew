@@ -13,13 +13,22 @@ We have developed a machine learning model using our own algorithm to predict wh
 
 The goal of this tool is to support both patients and physicians in identifying potential risks early and guiding further clinical actions."""
 
-st.markdown(" ## References")
-"""1. https://archive.ics.uci.edu/dataset/891/cdc+diabetes+health+indicators  2. https://www.cdc.gov/brfss/annual_data/annual_2014.html"""
-st.markdown(" ## Group members")
-"""Amanda Jacobsson  
-Anna Larsen  
-Anton Altmeyer  
-Elina Nordlund  
-Vikrant Nigam"""
+st.divider()
 
-st.markdown(" ## Contact information")
+st.markdown(" ## References")
+"""
+1. https://archive.ics.uci.edu/dataset/891/cdc+diabetes+health+indicators  
+
+2. https://www.cdc.gov/brfss/annual_data/annual_2014.html
+"""
+
+st.divider()
+
+st.markdown(""" 
+            ## Group members & Contact Information
+            * Amanda Jacobsson - amanda.jacobsson@findabetes.com
+            * Anna Larsen - anna.larsen@findabetes.com
+            * Anton Altmeyer - anton.altmeyer@findabetes.com
+            * Elina Nordlund - elina.nordlund@findabetes.com
+            * Vikrant Nigam - vikrant.nigam@findabetes.com
+""")
