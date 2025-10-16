@@ -1,162 +1,127 @@
 import streamlit as st
 import pandas as pd
+import os
 
+# -----------------------------
 # Sidebar configuration
-st.sidebar.image("./assets/LogoFindabetes.png",)
-st.sidebar.success("Select a tab above.")
+# -----------------------------
+st.sidebar.image("./assets/LogoFindabetes.png")
 
-bool_map = {'Yes': 1, 'No': 0}
-gender_map = {'Male': 1, 'Female': 0}
-bp_map = {'High': 1, 'Normal': 0}
+# -----------------------------
+# Helper functions for encoding
+# -----------------------------
+def encode_binary(option):
+    """Encode Yes/No as 1/0"""
+    return 1 if option == "Yes" else 0
 
-st.write("# Questionnaire")
-st.write(" ### Fill out the form below. The answers will be sent to your physician for further assessment.")
-st.write("By proceeding, you consent to your responses being collected and used for medical purposes in accordance with Findabetes' data handling and privacy policy.")
-agree_terms = st.checkbox("I agree to the terms.")
+def encode_gender(option):
+    """Encode gender: Male=1, Female=0"""
+    return 1 if option == "Male" else 0
+
+def calculate_BMI(weight, height):
+    """Calculate BMI from weight (kg) and height (cm)"""
+    height_meter = height / 100
+    return weight / (height_meter ** 2)
+
+# -----------------------------
+# Page title and disclaimer
+# -----------------------------
+st.title("Questionnaire")
+st.write(
+    "### Please complete the form below. Your responses will be sent to your physician for assessment."
+)
+st.warning(
+    "⚠️ If you are experiencing severe symptoms such as extreme thirst, unexplained weight loss, frequent urination, fatigue, or blurred vision, "
+    "please visit a physician immediately before proceeding."
+)
+st.write(
+    "By proceeding, you consent to your responses being collected and used for medical purposes in accordance with Findabetes' data handling and privacy policy."
+)
+
+agree_terms = st.checkbox("I agree to the terms and conditions.")
 
 st.divider()
 
+# -----------------------------
+# Form
+# -----------------------------
 if agree_terms:
 
-    with st.form("my_form"):
+    with st.form("questionnaire_form"):
+        st.subheader("Personal Information")
+        col1, col2 = st.columns(2)
+        with col1:
+            gender = st.radio("Gender", ["Female", "Male"])
+        with col2:
+            age = st.number_input("Age", min_value=18, max_value=120, step=1, format="%d")
 
-        option = st.radio(
-            "Choose your gender.",
-            ["Female", "Male"],
-            index=None,
-            key=1,
-        )
-        gender = option
+        st.subheader("Health Information")
+        col1, col2 = st.columns(2)
+        with col1:
+            highbp = st.radio("Blood Pressure Level", ["Normal", "High"])
+            weight = st.number_input("Weight (kg)", step=1, format="%d")
+            height = st.number_input("Height (cm)", step=1, format="%d")
+        with col2:
+            smoker = st.radio("Have you smoked at least 100 cigarettes in your life?", ["No", "Yes"])
+            stroke = st.radio("Have you had a stroke?", ["No", "Yes"])
+            HeartDiseaseorAttack = st.radio(
+                "Have you had or do you have Coronary Heart Disease (CHD) or myocardial infarction?",
+                ["No", "Yes"]
+            )
+        if height and weight is not None:
+            bmi = calculate_BMI(weight, height)
+            st.info(f"Your calculated BMI is **{bmi:.1f}**")
+        else:
+            bmi = 0
 
-        #Should be decided on an acceptable interval!
-        age = st.number_input(
-            "Enter your age",
-            min_value=18,
-            max_value=120,
-            step=1,
-            format="%d",      # ensures whole numbers are displayed
-        )
-        
-        option = st.radio(
-            "Select the level of your blood pressure",
-            ["Normal", "High"],
-            index=None,
-            key=10,
-        )
-        highbp = option
+        st.subheader("Lifestyle")
+        col1, col2 = st.columns(2)
+        with col1:
+            PhysAct = st.radio("Physical activity in the past 30 days (not including work)?", ["No", "Yes"])
+            Fruits = st.radio("Consume fruit at least once per day?", ["No", "Yes"])
+            Veggies = st.radio("Consume vegetables at least once per day?", ["No", "Yes"])
+        with col2:
+            DiffWalk = st.radio("Do you have serious difficulty walking or climbing stairs?", ["No", "Yes"])
+            GenHlth = st.selectbox(
+                "General health (1=Excellent, 5=Poor)",
+                ["Excellent", "Very good", "Good", "Fair", "Poor"]
+            )
+            MenHlth = st.slider(
+                "Number of past 30 days with mental health problems",
+                min_value=0, max_value=30, value=0
+            )
 
-    ## Insert BMI calculator here!
-        weight = st.number_input("Weight (kg)",
-                                step=1,
-                                format="%d")
-        height = st.number_input("Height (cm):",         
-                                step=1,
-                                format="%d")
-        def calculate_BMI(weight, height):
-            height_meter = height / 100
-            return weight / (height_meter ** 2) 
-        
-        option = st.radio(
-            "Have you smoked at least 100 cigarettes in your entire life? [Note: 5 packs = 100 cigarettes]",
-            ["No", "Yes"],
-            index=None,
-            key=9,
-        )
-        smoker = option
+        # -----------------------------
+        # Encode responses and create DataFrame
+        # -----------------------------
+        gen_health_map = {"Excellent": 1, "Very good": 2, "Good": 3, "Fair": 4, "Poor": 5}
+        df = pd.DataFrame({
+            "High BP": [1 if highbp == "High" else 0],
+            "BMI": [round(bmi, 1)],
+            "Smoker": [encode_binary(smoker)],
+            "Stroke": [encode_binary(stroke)],
+            "Heart Disease or Attack": [encode_binary(HeartDiseaseorAttack)],
+            "Physical Activity": [encode_binary(PhysAct)],
+            "Fruits": [encode_binary(Fruits)],
+            "Veggies": [encode_binary(Veggies)],
+            "General Health": [gen_health_map[GenHlth]],
+            "Mental Health": [MenHlth],
+            "Difficulties Walking": [encode_binary(DiffWalk)],
+            "Gender": [encode_gender(gender)],
+            "Age": [int(age)]
+        })
 
-    ## Note that in the data set the question is "(Ever told) you had a stroke".
-        option = st.radio(
-            "Have you had a stroke?",
-            ["No", "Yes"],
-            index=None,
-            key=8,
-        )
-        stroke = option
-
-    ## Might be rephrased
-        option = st.radio(
-            "Have you had or do you have Coronary Heart Disease (CHD) or myocardial infarction?",
-            ["No", "Yes"],
-            index=None,
-            key=7,
-        )
-        HeartDiseaseorAttack = option
-
-        option = st.radio(
-            "Have you performed physical activity in the past 30 days? (Not including your job)",
-            ["No", "Yes"],
-            index=None,
-            key=6,
-        )
-        PhysAct = option
-
-        option = st.radio(
-            "Do you consume fruit at least one time per day?",
-            ["No", "Yes"],
-            index=None,
-            key=5,
-        )
-        Fruits = option
-
-        option = st.radio(
-            "Do you consume vegetables at least one time per day?",
-            ["No", "Yes"],
-            index=None,
-            key=4,
-        )
-        Veggies = option
-
-        options = ["Excellent", "Very good", "Good", "Fair","Poor"]
-        selection = st.pills(
-            "Would you say that in general your health is on a scale 1-5?", 
-            options)
-        
-        if selection:
-            if selection == 'Excellent':
-                GenHlth = 1
-            elif selection == 'Very good':
-                GenHlth = 2
-            elif selection == 'Good':
-                GenHlth = 3
-            elif selection == 'Fair':
-                GenHlth = 4
-            elif selection == 'Poor':
-                GenHlth = 5    
-
-        ##  A slider may not be the best option, but we'll go with that for now. 
-        option = st.select_slider(
-            "How many of the past 30 days have you experienced any mental health problems?",
-            options=[str(i) for i in range(31)],
-        )
-        MenHlth = option
-        
-        option = st.radio(
-            "Do you have serious difficulty walking or climbing stairs?",
-            ["No", "Yes"],
-            index=None,
-            key=2,
-        )
-        DiffWalk = option
-
-        
+        # -----------------------------
+        # Submit button
+        # -----------------------------
         submitted = st.form_submit_button("Submit")
-        ## Have to enter more code in this button once the dataset is loaded!
 
         if submitted:
-            df = pd.DataFrame({
-                "High BP": [bp_map[highbp]],
-                "BMI": [int(calculate_BMI(weight=weight, height=height))],
-                "Smoker": [bool_map[smoker]],
-                "Stroke": [bool_map[stroke]],
-                "Heart Disease or Attack": [bool_map[HeartDiseaseorAttack]],
-                "Physical Activity": [bool_map[PhysAct]],
-                "Fruits": [bool_map[Fruits]],
-                "Veggies": [bool_map[Veggies]],
-                "General Health": [GenHlth],
-                "Mental Health": [MenHlth],
-                "Difficulties Walking": [bool_map[DiffWalk]],
-                "Gender": [gender_map[gender]],
-                "Age": [int(age)]
-            })
+            if df.isna().any(axis=1).values[0]:
+                st.error("Please fill out all fields before submitting.", icon="⚠️")
+            else:
+                # Append to CSV instead of overwriting
+                file_path = './data/input_data.csv'
+                df.to_csv(file_path, index=False, mode='a', header=not os.path.exists(file_path))
 
-            df.to_csv('././data/input_data.csv', index=False)
+                st.success("Your data has been successfully transmitted!", icon="✅")
