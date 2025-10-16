@@ -7,6 +7,7 @@ st.set_page_config(
 )
 
 # Sidebar configuration
+st.sidebar.markdown("# Dashboard Clinician")
 st.sidebar.image("./assets/LogoFindabetes.png",)
 st.sidebar.success("Select a tab above.")
 
@@ -38,7 +39,7 @@ with st.container(border=False):
         - For how many days during the past 30 days was your physical health not good? 
         - Do you have serious difficulty walking or climbing stairs? 
         - Gender
-        - Age
+        - Age Group
         """
     )
 
