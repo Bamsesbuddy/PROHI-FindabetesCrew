@@ -41,6 +41,19 @@ with col2:
 
 st.divider()
 
+st.markdown("""
+### ⚠️ Important Notice
+
+This questionnaire is intended for early risk screening of Type-2 diabetes and should not be used as a substitute for 
+professional medical advice or diagnosis.  
+
+If you are currently experiencing severe of the above shown symptoms such as extreme unexplained weight loss, 
+frequent urination, fatigue, blurred vision, or any other serious health concerns, 
+please **seek immediate medical attention** or **visit a physician** without delay.
+""")
+
+st.divider()
+
 st.markdown(
     """
     ### 🔒 Privacy and Data Use
@@ -55,8 +68,6 @@ st.markdown(
     If you have any questions, please contact **RandomName Primary Care Central**.
     """
 )
-
-st.divider()
 
 if st.button("Start questionnaire"): 
     st.switch_page("pages/Questionnaire.py")
