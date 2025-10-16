@@ -35,6 +35,16 @@ def get_age_group_mapping(age):
     elif age <= 79: return 12
     else: return 13
 
+age_map = {
+    1: '18–24',  2: '25–29',  3: '30–34',  4: '35–39',
+    5: '40–44',  6: '45–49',  7: '50–54',  8: '55–59',
+    9: '60–64', 10: '65–69', 11: '70–74', 12: '75–79',
+    13: '80+'
+}
+
+# Reverse map for converting label -> number if needed later
+age_reverse = {v: k for k, v in age_map.items()}
+
 X = pd.read_csv("data/input_data.csv")  # THIS must match the features (columns) the model expects
 
 X["Age"] = get_age_group_mapping(X["Age"].to_numpy())
@@ -97,17 +107,41 @@ with st.container(border=True):
                 default_value = 'Yes' if int(X[feature]) > 0.5 else 'No'
                 value = st.select_slider(label=f'{feature} - Yes or No: ', options=['Yes', 'No'], value=default_value)
                 X[feature] = 1 if value == 'Yes' else 0
-            elif feature in ['BMI', 'General Health', 'Mental Health']:
-                X[feature] = st.number_input(label=f'Select {feature}: ', value=X[feature])
-            elif feature in ['Age']:
-                X[feature] = st.slider(label=f'Select {feature}: ', min_value=1, max_value=13, value=int(X[feature]))
+            elif feature in ['BMI', 'General Health']:
+                if feature == 'General Health':
+                    X[feature] = st.number_input(label=f'Select {feature}: ', value=int(X[feature]), min_value=1, max_value=5)
+                else:
+                    X[feature] = st.number_input(label=f'Select {feature}: ', value=int(X[feature]))
+            elif feature in ['Age', 'Mental Health']:
+                if feature == 'Age':
+                    # Convert current numeric age code to its label
+                    current_label = age_map.get(int(X[feature]), '18–24')
+
+                    # Create select_slider with labels instead of numbers
+                    selected_age_label = st.select_slider(
+                        label='Select Age Group:',
+                        options=list(age_map.values()),
+                        value=current_label
+                    )
+
+                    # Convert the selected label back to numeric code if your model expects numbers
+                    X[feature] = age_reverse[selected_age_label]
+                if feature == 'Mental Health':
+                    X[feature] = st.slider(label=f'Select {feature}: ', min_value=0, max_value=30, value=int(X[feature]))
 
     with col2:
         pred_prob = model.predict_proba(X)[0, 1]
         # Donut chart for diabetes risk
-        donut_class_one = make_donut(int(pred_prob * 100), 'Type-2 Diabetes Risk', 'red')
+        if int(pred_prob * 100) > 50:
+            donut_class_one = make_donut(int(pred_prob * 100), 'Risk of Type-2 Diabetes', 'red')
+            st.altair_chart(donut_class_one, use_container_width=True)
+        elif int(pred_prob * 100) > 30:
+            donut_class_one = make_donut(int(pred_prob * 100), 'Risk of Type-2 Diabetes', 'orange')
+            st.altair_chart(donut_class_one, use_container_width=True)
+        else:
+            donut_class_one = make_donut(int(pred_prob * 100), 'Risk of Type-2 Diabetes', 'green')
+            st.altair_chart(donut_class_one, use_container_width=True)
         st.markdown("<h2 style='text-align: center;'>Risk of Type-2 Diabetes</h2>", unsafe_allow_html=True)
-        st.altair_chart(donut_class_one, use_container_width=True)
 
 
 ### Link to giudelines (recommendations outside of scope)
