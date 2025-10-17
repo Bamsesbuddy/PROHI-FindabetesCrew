@@ -17,7 +17,7 @@ st.write("# Findabetes CDS Tool")
 
 st.markdown(
     """
-    ## Screening tool for predicting risk for diabetes. 
+    ## Screening Tool for Predicting Risk for Type-2 Diabetes. 
     Our tool is meant to help clinicians digitally and more easily receive data from patients and predict whether the patients have a risk of developing Type-2 diabetes.
     """
 )

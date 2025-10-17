@@ -20,13 +20,25 @@ st.sidebar.image("./assets/LogoFindabetes.png")
 def load_data():
     return pd.read_csv("data/data.csv")
 df = load_data()
-
 df = df.drop(columns=['HvyAlcoholConsump'])
+
+feature_name_mapping = {
+    "HighBP": "High Blood Pressure",
+    "Smoker": "Current Smoker",
+    "Stroke": "History of Stroke",
+    "PhysActivity": "Regular Physical Activity",
+    "Fruits": "Consumes Fruits Regularly",
+    "Veggies": "Consumes Vegetables Regularly",
+    "HeartDiseaseorAttack": "Heart Disease or Heart Attack History",
+    "Sex": "Biological Sex (1=Male, 0=Female)",
+    "DiffWalk": "Difficulty Walking or Climbing Stairs"
+}
 
 # ---- Heatmap Correlation -----
 st.subheader("Interactive correlation heatmap")
 # Target and available features
-target = "Diabetes_binary"
+target = "Diabetes"
+df['Diabetes'] = df['Diabetes_binary']
 features = [
     "HighBP", "Smoker", "Stroke", "PhysActivity",
     "Fruits", "Veggies", "HeartDiseaseorAttack",
@@ -35,7 +47,7 @@ features = [
 heatmap_features = st.multiselect(
     "Select what features you wish to see in the heatmap.", 
     features, 
-    default=None)
+    default=['HighBP', 'Smoker', 'PhysActivity'])
 
 if heatmap_features:
     corr = df.select_dtypes("number").corr(numeric_only=True)
@@ -49,8 +61,39 @@ if heatmap_features:
         color_continuous_scale="RdBu_r",
         aspect="auto",
         zmin=-1, zmax=1,
-        title="Correlation between Diabetes and other features"
     )
+    fig.update_traces(
+        textfont=dict(color='Black', size=18),
+    )
+    fig.update_layout(
+        title_text = 'Correlation between Diabetes and selected Features',
+        title_font=dict(size=18),
+        coloraxis_colorbar=dict(
+            title="Correlation",
+            tickfont=dict(size=14)
+        ),
+        xaxis=dict(
+            title=dict(
+                text="Features",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=14),
+            showgrid=False,
+        ),
+        yaxis=dict(
+            title=dict(
+                text="Target",
+                font=dict(color="black", size=16)
+            ),
+            tickfont=dict(color="black", size=14),
+            categoryorder='total ascending'
+        ),
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+    )
+    for annotation in fig.layout.annotations:
+        annotation.font.size = 14
+        annotation.font.color = "black"
     st.plotly_chart(fig, use_container_width=True)
 else: 
     st.warning("Please select at least one feature to display.")
@@ -115,6 +158,8 @@ with col1:
         yaxis_title='PC2',
         width=800,
         height=600,
+        plot_bgcolor="white",
+        paper_bgcolor="white",
         legend_title_text='Absence/Presence Diabetes',
         xaxis=dict(
             title=dict(
@@ -149,71 +194,23 @@ df_0 = df_pca[df_pca['label'] == 0]
 df_1 = df_pca[df_pca['label'] == 1]
 
 with col2:
-    trace0 = go.Scatter3d(
-        x=df_0['PC1'],
-        y=df_0['PC2'],
-        z=df_0['PC3'],
-        mode='markers',
-        name='No Diabetes',
-        marker=dict(size=3, color="#4682b4", symbol='diamond'),
-        text=df_0.index,  # optional hover info
-        hovertemplate='Index: %{text}<br>PC1: %{x:.2f}<br>PC2: %{y:.2f}<br>PC3: %{z:.2f}<extra></extra>'
-    )
-
-    trace1 = go.Scatter3d(
-        x=df_1['PC1'],
-        y=df_1['PC2'],
-        z=df_1['PC3'],
-        mode='markers',
-        name='Diabetes',
-        marker=dict(size=3, color="#B22222", symbol='diamond'),
-        text=df_1.index,
-        hovertemplate='Index: %{text}<br>PC1: %{x:.2f}<br>PC2: %{y:.2f}<br>PC3: %{z:.2f}<extra></extra>'
-    )
-
-    fig = go.Figure(data=[trace0, trace1])
-
-    fig.update_layout(
-        title='3D PCA Scatter Plot',
-        width=900,
-        height=700,
-        legend_title_text='Absence/Presence Diabetes',
-        scene=dict(
-            xaxis=dict(
-                title=dict(text='PC1', font=dict(color='black', size=16)),
-                tickfont=dict(color='black', size=12),
-                showgrid=False,
-            ),
-            yaxis=dict(
-                title=dict(text='PC2', font=dict(color='black', size=16)),
-                tickfont=dict(color='black', size=12),
-            ),
-            zaxis=dict(
-                title=dict(text='PC3', font=dict(color='black', size=16)),
-                tickfont=dict(color='black', size=12),
-            )
+    with st.container(border=True):
+        st.markdown(
+            """
+            Principal Component Analysis (PCA) projects high-dimensional data onto orthogonal axes - 
+            number of principal components (PC) - that explain the largest variance in the data.
+            
+            Both Diabetes (red) and No Diabetes (blue) points overlap heavily in the center. 
+            There’s no distinct, well-separated cluster—instead, there’s a large mixed distribution. 
+            The Diabetes points may be slightly shifted toward the right-hand side or more spread out, 
+            but not clearly distinct.
+            
+            PC1 and PC2 do not strongly separate diabetic from non-diabetic individuals. 
+            This means that the main sources of variance captured by PCA are not primarily 
+            driven by diabetes status. Diabetes might influence other features, but that variance 
+            is either subtle or exists along higher components.
+            """
         )
-    )
-
-    st.plotly_chart(fig)
-
-with st.container(border=True):
-    st.markdown(
-        """
-        Principal Component Analysis (PCA) projects high-dimensional data onto orthogonal axes 
-        (number of components) that explain the largest variance in the data.
-        
-        Both “Diabetes” (red) and “No Diabetes” (blue) points overlap heavily in the center. 
-        There’s no distinct, well-separated cluster—instead, there’s a large mixed distribution. 
-        The Diabetes points may be slightly shifted toward the right-hand side or more spread out, 
-        but not clearly distinct.
-        
-        PC1 and PC2 do not strongly separate diabetic from non-diabetic individuals. 
-        This means that the main sources of variance captured by PCA are not primarily 
-        driven by diabetes status. Diabetes might influence other features, but that variance 
-        is either subtle or exists along higher components.
-        """
-    )
 
 st.divider()
 
@@ -260,8 +257,8 @@ with col1:
         )
     # --- Layout styling ---
     fig.update_layout(
-        title_text='',
-        title_x=0.5,
+        title_text='Number of past days with physical health problems across age groups',
+        title_font=dict(size=18),
         width=950,
         height=550,
         plot_bgcolor="white",
@@ -307,8 +304,8 @@ with col2:
 
     # --- Layout styling ---
     fig.update_layout(
-        title_text='',
-        title_x=0.5,
+        title_text='Number of past days with mental health problems across age groups',
+        title_font=dict(size=18),
         width=1050,
         height=550,
         plot_bgcolor="white",

@@ -33,7 +33,7 @@ features = [
     "Sex", "DiffWalk"
 ]
 
-col1, col2 = st.columns([0.7, 1.3])
+col1, col2 = st.columns([0.8, 1.2])
 
 with col1:
     # ---- Q5: Displaying prevalence of diabetes yes/no -----
@@ -46,16 +46,24 @@ with col1:
         names=labels,                 
         color=labels,
         color_discrete_map={"No diabetes": "#4682b4", "Diabetes": "#B22222"},
-        hole=0.3,                     
-        title="Proportion of Participants with and without Diabetes"
+        hole=0.3,               
     )
 
     fig.update_traces(
         textinfo="percent+label",
-        hovertemplate="%{label}: %{percent} (%{value:,})<extra></extra>"
+        hovertemplate="%{label}: %{percent} (%{value:,})<extra></extra>",
+        textfont=dict(color='white', size=14),
     )
 
-    fig.update_layout(width=500, height=500, showlegend=False)
+    fig.update_layout(
+        title="Proportion of Participants with and without Diabetes",
+        title_font=dict(size=18),
+        width=500, 
+        height=500, 
+        showlegend=False,
+        plot_bgcolor="white",
+        paper_bgcolor="white"
+    )
     st.plotly_chart(fig, use_container_width=True)
 
 with col2:
@@ -94,19 +102,20 @@ with col2:
                 text=[f"{v:.1f}%" if v > 3 else "" for v in plot_df[col]],
                 textposition='inside',
                 insidetextanchor='middle',
-                textfont=dict(color='white', size=11, family='Arial'),
+                textfont=dict(color='white', size=14),
             ))
 
         # --- Layout adjustments ---
         fig.update_layout(
             barmode='stack',
+
             xaxis=dict(
                 range=[0, 100],
                 title=dict(
                     text="Percent (%)",
                     font=dict(color="black", size=16)
                 ),
-                tickfont=dict(color="black", size=12),
+                tickfont=dict(color="black", size=14),
                 showgrid=False,
             ),
             yaxis=dict(
@@ -114,14 +123,11 @@ with col2:
                     text="",
                     font=dict(color="black", size=16)
                 ),
-                tickfont=dict(color="black", size=12),
+                tickfont=dict(color="black", size=14),
                 categoryorder='total ascending'
             ),
-            title=dict(
-                text="Share of patients with and without diabetes (100% stacked)",
-                x=0.5,
-                xanchor='center'
-            ),
+            title="Share of patients with and without diabetes",
+            title_font=dict(size=18),
             legend=dict(
                 title="Diabetes",
                 x=1.02,
@@ -129,7 +135,8 @@ with col2:
                 bgcolor='rgba(0,0,0,0)'
             ),
             margin=dict(l=80, r=150, t=60, b=40),
-            plot_bgcolor='white',
+            plot_bgcolor="white",
+            paper_bgcolor="white",
         )
 
         st.plotly_chart(fig, use_container_width=True)
@@ -277,8 +284,12 @@ with col2:
 
 
 # ------ Boxplot Distribution Plot ------
-st.markdown("## Distribution of BMI values per age group grouped by diabetes in the dataset")
-st.markdown("How is the BMI distributed per age group related to our target class of diabetes")
+st.markdown("## Distribution of BMI values across age group grouped by diabetes")
+st.markdown("""
+    We have seen that the prevalence of diabetes monotonically increases with the BMI level. But how is the
+    distribution of BMI values across age groups stratified into the diabetes absence or presence? We can see that the BMI 
+    values are on mean increased across all age groups for patients with Type-2 diabetes.
+""")
 
 age_bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, float('inf')]
 age_labels = ['18–24', '25–29', '30–34', '35–39', '40–44', '45–49',
@@ -301,12 +312,12 @@ fig = px.box(
         "BMI": "BMI",
         "Diabetes": "Diabetes Status"
     },
-    title="BMI Distribution by Age Group and Diabetes Status",
 )
 
 # --- Customize layout ---
 fig.update_layout(
     boxmode="group",  # side-by-side boxes per age group
+    title='BMI Distribution by Age Group and Diabetes Status',
     xaxis_title="Age Group",
     yaxis_title="BMI",
     legend_title="Diabetes",
@@ -316,7 +327,7 @@ fig.update_layout(
         bgcolor='rgba(0,0,0,0)',
         bordercolor='rgba(0,0,0,0)'
     ),
-    title_font=dict(size=16, family="Arial", color="black"),
+    title_font=dict(size=18),
     plot_bgcolor="white",
     paper_bgcolor="white",
     xaxis=dict(

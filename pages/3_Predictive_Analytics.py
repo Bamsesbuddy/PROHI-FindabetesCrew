@@ -145,12 +145,5 @@ if button_press_bool:
             box_shadow=True,
         )
 
-    ## Button that redirects us to Prescriptive Analytics, page 4
-    button_press = st.button("See detailed view")
-        
-if button_press:
-    button_press_bool = False
-    st.switch_page("pages/4_Prescriptive_Analytics.py")
-
 
 

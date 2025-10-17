@@ -93,7 +93,6 @@ with st.container(border=True):
 
 with st.container(border=True):
     st.subheader("🧠 Counterfactual What-If Explorer")
-    st.caption("Adjust top influential features to see how the risk prediction changes dynamically.")
 
     shap_importance = np.abs(shap_expl.values).mean(axis=0)
     top_features = pd.Series(shap_importance, index=X.columns).sort_values(ascending=False).head(5)
