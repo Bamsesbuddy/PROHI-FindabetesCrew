@@ -6,7 +6,6 @@ import json
 from PIL import Image
 import base64
 from huggingface_hub import InferenceClient
-import streamlit as st
 
 def make_donut(input_response, input_text, input_color, size=180):
     if input_color == 'blue':
@@ -113,7 +112,7 @@ def llama_data(data, pred):
         Please provide a short, clinician-oriented interpretation by doing the following:
         1. Summarize the **top 3–5 most influential features**, noting whether each increases or decreases diabetes risk.  
         2. Explain these findings in **clinical terms**, relating them to pathophysiology or risk factors (e.g., obesity, hypertension, physical inactivity, diet, metabolic syndrome).  
-        3. Conclude with a **concise 3–5 sentence summary** that contextualizes the risk profile and potential next clinical considerations or recommendations (e.g., lifestyle modification, screening follow-up, further lab testing).
+        3. Conclude with a **concise 3–5 sentence summary** that contextualizes the risk profile and potential next clinical considerations (e.g., lifestyle modification, screening follow-up, further lab testing).
 
         The output should be clear, evidence-informed, and phrased for **healthcare professionals** (not patients).  
         Avoid generic statements — tie your reasoning directly to the SHAP feature effects above.

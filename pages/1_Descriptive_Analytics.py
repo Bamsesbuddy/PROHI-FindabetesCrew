@@ -108,7 +108,6 @@ with col2:
         # --- Layout adjustments ---
         fig.update_layout(
             barmode='stack',
-
             xaxis=dict(
                 range=[0, 100],
                 title=dict(

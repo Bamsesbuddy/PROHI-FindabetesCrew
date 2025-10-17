@@ -22,18 +22,6 @@ def load_data():
 df = load_data()
 df = df.drop(columns=['HvyAlcoholConsump'])
 
-feature_name_mapping = {
-    "HighBP": "High Blood Pressure",
-    "Smoker": "Current Smoker",
-    "Stroke": "History of Stroke",
-    "PhysActivity": "Regular Physical Activity",
-    "Fruits": "Consumes Fruits Regularly",
-    "Veggies": "Consumes Vegetables Regularly",
-    "HeartDiseaseorAttack": "Heart Disease or Heart Attack History",
-    "Sex": "Biological Sex (1=Male, 0=Female)",
-    "DiffWalk": "Difficulty Walking or Climbing Stairs"
-}
-
 # ---- Heatmap Correlation -----
 st.subheader("Interactive correlation heatmap")
 # Target and available features
