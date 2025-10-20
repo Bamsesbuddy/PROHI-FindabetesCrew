@@ -122,6 +122,6 @@ if agree_terms:
             else:
                 # Append to CSV instead of overwriting
                 file_path = './data/input_data.csv'
-                df.to_csv(file_path, index=False, mode='a', header=not os.path.exists(file_path))
+                df.to_csv(file_path, index=False)
 
                 st.success("Your data has been successfully transmitted!", icon="✅")

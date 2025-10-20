@@ -52,6 +52,7 @@ if button_press_bool:
     user_data = pd.read_csv('data/input_data.csv')
     X = user_data.copy()
     X["Age"] = get_age_group_mapping(user_data["Age"].to_numpy())
+    X['BMI'] = int(X['BMI'])
 
     prediction = loaded_model.predict_proba(X)[0]
     # st.write(f"The predicted value is {prediction}")
@@ -97,7 +98,7 @@ if button_press_bool:
             st.subheader("👤 Demographics")
             st.metric("Gender", gender_map[user[11]])
             st.metric("Age", int(user[12]))
-            st.metric("BMI", f"{user[1]}")
+            st.metric("BMI", f"{int(user[1])}")
 
         with row1_col2:
             st.subheader("🩺 Conditions")
@@ -130,7 +131,7 @@ if button_press_bool:
         with row2_col1:
             st.subheader("🧠 Mental & Physical")
             st.metric("General Health", tmp)
-            st.metric("Mental Health", user[9])
+            st.metric("Mental Health", int(user[9]))
 
         with row2_col2:
             st.subheader("🚶 Mobility")

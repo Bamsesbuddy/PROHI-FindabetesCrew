@@ -48,6 +48,7 @@ age_reverse = {v: k for k, v in age_map.items()}
 X = pd.read_csv("data/input_data.csv")  # THIS must match the features (columns) the model expects
 
 X["Age"] = get_age_group_mapping(X["Age"].to_numpy())
+X['BMI'] = int(X['BMI'])
 
 # ---- build a SHAP explainer (robust with fallbacks) ----
 try:
